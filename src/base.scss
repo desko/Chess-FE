@@ -1,0 +1,83 @@
+:root {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+  min-width: 32rem;
+
+  --color: #000;
+  --color-light: #fff;
+  --color-main: #282828;
+  --color-secondary: #dd562d;
+  --color-accent: #fff;
+
+  --shell-max-width: 120rem;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  font-size: 1.6rem;
+  line-height: 1.2;
+  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-accent);
+  background-color: var(--color-main);
+}
+
+h1,
+.h1,
+h2,
+.h2,
+h3,
+.h3,
+h4,
+.h4,
+h5,
+.h5,
+h6,
+.h6 {
+  font-weight: 700;
+  --font-size-step: .85;
+  --font-size-h6: 1.6rem;
+  --font-size-h5: calc(var(--font-size-h6) / var(--font-size-step));
+  --font-size-h4: calc(var(--font-size-h5) / var(--font-size-step));
+  --font-size-h3: calc(var(--font-size-h4) / var(--font-size-step));
+  --font-size-h2: calc(var(--font-size-h3) / var(--font-size-step));
+  --font-size-h1: calc(var(--font-size-h2) / var(--font-size-step));
+}
+
+h1,
+.h1 {
+  font-size: var(--font-size-h1);
+  line-height: 1.2;
+}
+
+h2,
+.h2 {
+  font-size: var(--font-size-h2);
+  line-height: 1.2;
+}
+
+h3,
+.h3 {
+  font-size: var(--font-size-h3);
+  line-height: 1.2;
+}
+
+h4,
+.h4 {
+  font-size: var(--font-size-h4);
+  line-height: 1.2;
+}
+
+h5,
+.h5 {
+  font-size: var(--font-size-h5);
+  line-height: 1.2;
+}
+
+h6,
+.h6 {
+  font-size: var(--font-size-h6);
+  line-height: 1.2;
+}
