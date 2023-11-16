@@ -1,0 +1,281 @@
+.loader {
+	max-width: 4rem;
+	width: 4rem;
+	height: 4rem;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	animation: loaderAnimation infinite var(--animation-duration);
+
+	--animation-duration: 0.5s;
+	--animation-step: 1;
+
+	--TL-top: 0%;
+	--TL-left: 0%;
+	--TL-transform-x: 0%;
+	--TL-transform-y: 0%;
+
+	--TR-top: 0%;
+	--TR-left: 100%;
+	--TR-transform-x: -100%;
+	--TR-transform-y: 0%;
+
+	--BR-top: 100%;
+	--BR-left: 100%;
+	--BR-transform-x: -100%;
+	--BR-transform-y: -100%;
+
+	span {
+		display: block;
+		width: 0.5rem;
+		height: 0.5rem;
+		background-color: var(--text);
+		border-radius: 50%;
+		position: absolute;
+		transition: transform
+				calc(var(--animation-duration) / var(--animation-step)),
+			top calc(var(--animation-duration) / var(--animation-step)),
+			left calc(var(--animation-duration) / var(--animation-step));
+
+		&:nth-child(1) {
+			top: var(--TL-top);
+			left: var(--TL-left);
+			transform: translate(var(--TL-transform-x), var(--TL-transform-y));
+		}
+
+		&:nth-child(2) {
+			top: var(--TR-top);
+			left: var(--TR-left);
+			transform: translate(var(--TR-transform-x), var(--TR-transform-y));
+		}
+
+		&:nth-child(3) {
+			top: var(--BR-top);
+			left: var(--BR-left);
+			transform: translate(var(--BR-transform-x), var(--BR-transform-y));
+		}
+	}
+}
+
+@keyframes loaderAnimation {
+	0% {
+		--TL-top: 0%;
+		--TL-left: 0%;
+		--TL-transform-x: 0%;
+		--TL-transform-y: 0%;
+
+		--TR-top: 0%;
+		--TR-left: 100%;
+		--TR-transform-x: -100%;
+		--TR-transform-y: 0%;
+
+		--BR-top: 100%;
+		--BR-left: 100%;
+		--BR-transform-x: -100%;
+		--BR-transform-y: -100%;
+	}
+
+	8.33% {
+		--TL-top: 0%;
+		--TL-left: 0%;
+		--TL-transform-x: 0%;
+		--TL-transform-y: 0%;
+
+		--TR-top: 0%;
+		--TR-left: 100%;
+		--TR-transform-x: -100%;
+		--TR-transform-y: 0%;
+
+		--BR-top: 100%;
+		--BR-left: 0%;
+		--BR-transform-x: 0%;
+		--BR-transform-y: -100%;
+	}
+
+	16.66% {
+		--TL-top: 0%;
+		--TL-left: 0%;
+		--TL-transform-x: 0%;
+		--TL-transform-y: 0%;
+
+		--TR-top: 100%;
+		--TR-left: 100%;
+		--TR-transform-x: -100%;
+		--TR-transform-y: -100%;
+
+		--BR-top: 100%;
+		--BR-left: 0%;
+		--BR-transform-x: 0%;
+		--BR-transform-y: -100%;
+	}
+
+	24.99% {
+		--TL-top: 0%;
+		--TL-left: 100%;
+		--TL-transform-x: -100%;
+		--TL-transform-y: 0%;
+
+		--TR-top: 100%;
+		--TR-left: 100%;
+		--TR-transform-x: -100%;
+		--TR-transform-y: -100%;
+
+		--BR-top: 100%;
+		--BR-left: 0%;
+		--BR-transform-x: 0%;
+		--BR-transform-y: -100%;
+	}
+
+	33.32% {
+		--TL-top: 0%;
+		--TL-left: 100%;
+		--TL-transform-x: -100%;
+		--TL-transform-y: 0%;
+
+		--TR-top: 100%;
+		--TR-left: 100%;
+		--TR-transform-x: -100%;
+		--TR-transform-y: -100%;
+
+		--BR-top: 0%;
+		--BR-left: 0%;
+		--BR-transform-x: 0%;
+		--BR-transform-y: 0%;
+	}
+
+	41.65% {
+		--TL-top: 0%;
+		--TL-left: 100%;
+		--TL-transform-x: -100%;
+		--TL-transform-y: 0%;
+
+		--TR-top: 100%;
+		--TR-left: 0%;
+		--TR-transform-x: 0%;
+		--TR-transform-y: -100%;
+
+		--BR-top: 0%;
+		--BR-left: 0%;
+		--BR-transform-x: 0%;
+		--BR-transform-y: 0%;
+	}
+
+	49.98% {
+		--TL-top: 100%;
+		--TL-left: 100%;
+		--TL-transform-x: -100%;
+		--TL-transform-y: -100%;
+
+		--TR-top: 100%;
+		--TR-left: 0%;
+		--TR-transform-x: 0%;
+		--TR-transform-y: -100%;
+
+		--BR-top: 0%;
+		--BR-left: 0%;
+		--BR-transform-x: 0%;
+		--BR-transform-y: 0%;
+	}
+
+	58.31% {
+		--TL-top: 100%;
+		--TL-left: 100%;
+		--TL-transform-x: -100%;
+		--TL-transform-y: -100%;
+
+		--TR-top: 100%;
+		--TR-left: 0%;
+		--TR-transform-x: 0%;
+		--TR-transform-y: -100%;
+
+		--BR-top: 0%;
+		--BR-left: 100%;
+		--BR-transform-x: -100%;
+		--BR-transform-y: 0%;
+	}
+
+	66.64% {
+		--TL-top: 100%;
+		--TL-left: 100%;
+		--TL-transform-x: -100%;
+		--TL-transform-y: -100%;
+
+		--TR-top: 0%;
+		--TR-left: 0%;
+		--TR-transform-x: 0%;
+		--TR-transform-y: 0%;
+
+		--BR-top: 0%;
+		--BR-left: 100%;
+		--BR-transform-x: -100%;
+		--BR-transform-y: 0%;
+	}
+
+	74.97% {
+		--TL-top: 100%;
+		--TL-left: 0%;
+		--TL-transform-x: 0%;
+		--TL-transform-y: -100%;
+
+		--TR-top: 0%;
+		--TR-left: 0%;
+		--TR-transform-x: 0%;
+		--TR-transform-y: 0%;
+
+		--BR-top: 0%;
+		--BR-left: 100%;
+		--BR-transform-x: -100%;
+		--BR-transform-y: 0%;
+	}
+
+	83.3% {
+		--TL-top: 100%;
+		--TL-left: 0%;
+		--TL-transform-x: 0%;
+		--TL-transform-y: -100%;
+
+		--TR-top: 0%;
+		--TR-left: 0%;
+		--TR-transform-x: 0%;
+		--TR-transform-y: 0%;
+
+		--BR-top: 100%;
+		--BR-left: 100%;
+		--BR-transform-x: -100%;
+		--BR-transform-y: -100%;
+	}
+
+	91.63% {
+		--TL-top: 100%;
+		--TL-left: 0%;
+		--TL-transform-x: 0%;
+		--TL-transform-y: -100%;
+
+		--TR-top: 0%;
+		--TR-left: 100%;
+		--TR-transform-x: -100%;
+		--TR-transform-y: 0%;
+
+		--BR-top: 100%;
+		--BR-left: 100%;
+		--BR-transform-x: -100%;
+		--BR-transform-y: -100%;
+	}
+
+	100% {
+		--TL-top: 0%;
+		--TL-left: 0%;
+		--TL-transform-x: 0%;
+		--TL-transform-y: 0%;
+
+		--TR-top: 0%;
+		--TR-left: 100%;
+		--TR-transform-x: -100%;
+		--TR-transform-y: 0%;
+
+		--BR-top: 100%;
+		--BR-left: 100%;
+		--BR-transform-x: -100%;
+		--BR-transform-y: -100%;
+	}
+}

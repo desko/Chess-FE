@@ -2,14 +2,8 @@ type Props = {
 	children?: React.ReactNode;
 };
 
-const Wrapper = ({children}: Props) => {
-	return (
-		<div className='Wrapper'>
-			{
-				children
-			}
-		</div>
-	)
-}
+const Wrapper = ({ children }: Props) => {
+	return <div className='wrapper'>{children}</div>;
+};
 
-export default Wrapper
+export default Wrapper;
