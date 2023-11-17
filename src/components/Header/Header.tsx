@@ -38,7 +38,14 @@ const Header = ({ title }: { title: string }) => {
 					</aside>
 
 					<div className='header__content'>
-						{!loggedIn && <Link to={'/login'}>login</Link>}
+						{!loggedIn && (
+							<>
+								<Link to={'/login'}>login</Link>
+
+								<Link to={'/signup'}>signup</Link>
+							</>
+						)}
+
 						{loggedIn && (
 							<Button text='logout' onClick={logoutUser} />
 						)}

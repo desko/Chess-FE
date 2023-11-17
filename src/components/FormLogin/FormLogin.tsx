@@ -55,8 +55,8 @@ const FormLogin = () => {
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className='form__body'>
 					<FormRow
-						label='Email Address'
 						type='email'
+						label='Email Address'
 						name='email'
 						placeholder='Email Address'
 						register={register}
@@ -68,8 +68,8 @@ const FormLogin = () => {
 					/>
 
 					<FormRow
-						label='Password'
 						type='password'
+						label='Password'
 						name='password'
 						placeholder='Password'
 						register={register}

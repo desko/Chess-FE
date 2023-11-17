@@ -1,5 +1,10 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import registerSchema from '../schemas/registerSchema';
+import { z } from 'zod';
+
+type RegisterSchema = z.infer<typeof registerSchema>;
+
 const baseUrl = `${import.meta.env.VITE_BASE_URL}`;
 
 type LoginSuccess = null | {
@@ -15,6 +20,17 @@ type LoginResponse = [LoginSuccess, LoginError];
 type Credentials = {
 	email: string;
 	password: string;
+};
+
+export const registerUser = async (userData: RegisterSchema) => {
+	try {
+		const response = await axios.post(`${baseUrl}/register`, userData);
+
+		return response;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	} catch (error: any) {
+		return error.response;
+	}
 };
 
 export const loginUser = createAsyncThunk(
