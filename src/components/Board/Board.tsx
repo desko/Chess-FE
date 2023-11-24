@@ -1,4 +1,7 @@
 import { Fragment } from 'react';
+import './Board.scss';
+import { DEF_POSITION } from '../../common/constants/constants';
+import Piece from '../Piece/Piece';
 
 const Board = () => {
 	type Square = {
@@ -38,16 +41,44 @@ const Board = () => {
 
 	return (
 		<div className='board'>
-			{boardArray.map((col, columnIndex) => (
-				<Fragment key={'col' + columnIndex}>
-					{col.map((square, rowIndex) => (
-						<div
-							key={'row' + columnIndex + 'sqr' + rowIndex}
-							className={`square ${square.code}`}
-						></div>
-					))}
-				</Fragment>
-			))}
+			<div className='board__squares'>
+				{boardArray.map((col, columnIndex) => (
+					<Fragment key={'col' + columnIndex}>
+						{col.map((square, rowIndex) => (
+							<div
+								key={'row' + columnIndex + 'sqr' + rowIndex}
+								className={`square ${square.code} ${
+									(columnIndex + rowIndex) % 2 === 0
+										? 'white'
+										: 'black'
+								}`}
+							></div>
+						))}
+					</Fragment>
+				))}
+			</div>
+
+			<div className='board__figures'>
+				{DEF_POSITION.white.figures.map((piece) => {
+					return (
+						<Piece
+							key={piece.col + piece.row}
+							color='white'
+							piece={piece.piece}
+						/>
+					);
+				})}
+
+				{DEF_POSITION.black.figures.map((piece) => {
+					return (
+						<Piece
+							key={piece.col + piece.row}
+							color='black'
+							piece={piece.piece}
+						/>
+					);
+				})}
+			</div>
 		</div>
 	);
 };
