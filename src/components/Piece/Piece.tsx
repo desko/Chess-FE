@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
-import type { Piece } from '../../common/constants/constants';
+import { useState, type ReactElement } from 'react';
+import type { PieceBoard } from '../../common/constants/constants';
 
 import KingWhite from '../../assets/set-online/king-w.svg?react';
 import QueenWhite from '../../assets/set-online/queen-w.svg?react';
@@ -17,7 +17,7 @@ import PawnBlack from '../../assets/set-online/pawn-b.svg?react';
 
 type Props = {
 	color: 'white' | 'black';
-	piece: Piece;
+	piece: PieceBoard;
 };
 
 type pieceMapSide = {
@@ -60,7 +60,33 @@ const pieceMap: PieceMap = {
 };
 
 const Piece = ({ piece, color }: Props) => {
-	return <div className={`piece ${piece}`}>{pieceMap[color][piece]}</div>;
+	const [dragged, setDragged] = useState(false);
+
+	const movePiece = () => {};
+	const dragPiece = (e) => {
+		setDragged(true);
+	};
+
+	const undragPiece = (e) => {
+		setDragged(false);
+	};
+
+	return (
+		<div
+			onClick={movePiece}
+			onMouseDown={dragPiece}
+			onTouchStart={dragPiece}
+			onMouseUp={undragPiece}
+			onTouchEnd={undragPiece}
+			style={{
+				'--row-num': piece.rowCount,
+				'--col-num': piece.colCount,
+			}}
+			className={`piece ${piece.piece} ${dragged ? 'dragged' : 'static'}`}
+		>
+			{pieceMap[color][piece.piece]}
+		</div>
+	);
 };
 
 export default Piece;
