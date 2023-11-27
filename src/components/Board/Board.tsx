@@ -1,4 +1,4 @@
-import { useState, Fragment, useEffect, useRef, useCallback } from 'react';
+import { Fragment, useEffect, useRef, useCallback } from 'react';
 import './Board.scss';
 import { DEF_POSITION } from '../../common/constants/constants';
 import Piece from '../Piece/Piece';
@@ -23,9 +23,7 @@ const Board = () => {
 
 	// component logic
 
-	const [dragged, setDragged] = useState(false);
-
-	const innerRef = useRef(null);
+	const innerRef = useRef<HTMLDivElement>(null);
 
 	for (let i = rows; i > 0; i--) {
 		const colArray: Column = [];
@@ -45,7 +43,7 @@ const Board = () => {
 		boardArray.push(colArray);
 	}
 
-	const handleBoardResize = useCallback(() => {
+	const handleBoardSizes = useCallback(() => {
 		if (
 			innerRef.current &&
 			(innerRef.current as HTMLElement) instanceof HTMLElement
@@ -54,44 +52,6 @@ const Board = () => {
 				'--inner-size',
 				(innerRef.current as HTMLElement).clientWidth + 'px'
 			);
-		}
-	}, [innerRef]);
-
-	useEffect(() => {
-		handleBoardResize();
-		window.addEventListener('resize', handleBoardResize);
-
-		return () => {
-			window.removeEventListener('resize', handleBoardResize);
-		};
-	}, [handleBoardResize]);
-
-	const handleBoardDragStart = (e) => {
-		setDragged(true);
-	};
-
-	const handleBoardDragEnd = (e) => {
-		setDragged(false);
-		if (
-			innerRef.current &&
-			(innerRef.current as HTMLElement) instanceof HTMLElement
-		) {
-			(innerRef.current as HTMLElement).style.setProperty(
-				'--board-mouse-x',
-				''
-			);
-			(innerRef.current as HTMLElement).style.setProperty(
-				'--board-mouse-y',
-				''
-			);
-		}
-	};
-
-	const handleBoardDrag = (e) => {
-		if (
-			innerRef.current &&
-			(innerRef.current as HTMLElement) instanceof HTMLElement
-		) {
 			const { top, left: boardLeft } = (
 				innerRef.current as HTMLElement
 			).getBoundingClientRect();
@@ -99,40 +59,29 @@ const Board = () => {
 
 			const boardTop = docTop + top;
 
-			const { pageX: mouseX, pageY: mouseY } = e;
-			let touchX, touchY;
-			if (e?.targetTouches) {
-				const { pageX, pageY } = e.targetTouches[0];
-				touchX = pageX;
-				touchY = pageY;
-			}
-
-			const mX = mouseX | touchX;
-			const mY = mouseY | touchY;
-
 			(innerRef.current as HTMLElement).style.setProperty(
-				'--board-mouse-x',
-				mX - boardLeft + 'px'
+				'--inner-x',
+				boardLeft + 'px'
 			);
 			(innerRef.current as HTMLElement).style.setProperty(
-				'--board-mouse-y',
-				mY - boardTop + 'px'
+				'--inner-y',
+				boardTop + 'px'
 			);
 		}
-	};
+	}, [innerRef]);
+
+	useEffect(() => {
+		handleBoardSizes();
+		window.addEventListener('resize', handleBoardSizes);
+
+		return () => {
+			window.removeEventListener('resize', handleBoardSizes);
+		};
+	}, [handleBoardSizes]);
 
 	return (
 		<div className='board'>
-			<div
-				className='board__inner'
-				onMouseDown={handleBoardDragStart}
-				onTouchStart={handleBoardDragStart}
-				onMouseUp={handleBoardDragEnd}
-				onTouchEnd={handleBoardDragEnd}
-				onMouseMove={handleBoardDrag}
-				onTouchMove={handleBoardDrag}
-				ref={innerRef}
-			>
+			<div className='board__inner' ref={innerRef}>
 				<div className='board__squares'>
 					{boardArray.map((col, columnIndex) => (
 						<Fragment key={'col' + columnIndex}>

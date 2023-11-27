@@ -1,6 +1,6 @@
-import { useState, type ReactElement } from 'react';
+import { useRef, useState, type ReactElement } from 'react';
+import { throttle } from 'lodash-es';
 import type { PieceBoard } from '../../common/constants/constants';
-
 import KingWhite from '../../assets/set-online/king-w.svg?react';
 import QueenWhite from '../../assets/set-online/queen-w.svg?react';
 import RookWhite from '../../assets/set-online/rook-w.svg?react';
@@ -21,18 +21,12 @@ type Props = {
 };
 
 type pieceMapSide = {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	king: ReactElement<any>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	queen: ReactElement<any>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	rook: ReactElement<any>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	bishop: ReactElement<any>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	knight: ReactElement<any>;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	pawn: ReactElement<any>;
+	king: ReactElement;
+	queen: ReactElement;
+	rook: ReactElement;
+	bishop: ReactElement;
+	knight: ReactElement;
+	pawn: ReactElement;
 };
 
 type PieceMap = {
@@ -61,23 +55,71 @@ const pieceMap: PieceMap = {
 
 const Piece = ({ piece, color }: Props) => {
 	const [dragged, setDragged] = useState(false);
-
+	const pieceRef = useRef<HTMLDivElement>(null);
 	const movePiece = () => {};
-	const dragPiece = (e) => {
+	const dragPieceStart = () => {
 		setDragged(true);
 	};
 
-	const undragPiece = (e) => {
+	const dragPieceEnd = () => {
 		setDragged(false);
+		if (
+			pieceRef.current &&
+			(pieceRef.current as HTMLElement) instanceof HTMLElement
+		) {
+			(pieceRef.current as HTMLElement).style.setProperty(
+				'--mouse-x',
+				''
+			);
+			(pieceRef.current as HTMLElement).style.setProperty(
+				'--mouse-y',
+				''
+			);
+		}
+	};
+
+	const dragPiece = (
+		e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
+	) => {
+		if (dragged) {
+			console.log(e);
+			let mouseX, mouseY;
+
+			if ('touches' in e) {
+				const { pageX, pageY } = e.touches[0];
+				mouseX = pageX;
+				mouseY = pageY;
+			} else {
+				mouseX = e.pageX;
+				mouseY = e.pageY;
+			}
+
+			if (
+				pieceRef.current &&
+				(pieceRef.current as HTMLElement) instanceof HTMLElement
+			) {
+				(pieceRef.current as HTMLElement).style.setProperty(
+					'--mouse-x',
+					mouseX + 'px'
+				);
+				(pieceRef.current as HTMLElement).style.setProperty(
+					'--mouse-y',
+					mouseY + 'px'
+				);
+			}
+		}
 	};
 
 	return (
 		<div
+			ref={pieceRef}
 			onClick={movePiece}
-			onMouseDown={dragPiece}
-			onTouchStart={dragPiece}
-			onMouseUp={undragPiece}
-			onTouchEnd={undragPiece}
+			onMouseDown={dragPieceStart}
+			onTouchStart={dragPieceStart}
+			onMouseUp={dragPieceEnd}
+			onTouchEnd={dragPieceEnd}
+			onMouseMove={dragPiece}
+			onTouchMove={dragPiece}
 			style={{
 				'--row-num': piece.rowCount,
 				'--col-num': piece.colCount,

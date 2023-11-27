@@ -5,7 +5,7 @@
 	position: relative;
 
 	.board__inner {
-		max-width: 80vh;
+		max-width: min(80vh, 100%);
 		width: 100%;
 		aspect-ratio: 1/1;
 		position: relative;
@@ -48,10 +48,10 @@
 		--translate-x: calc(var(--square-width) * (var(--col-num, 1) - 1));
 		--translate-y: calc(var(--square-width) * (var(--row-num, 1) - 1));
 		--translate-cursor-x: calc(
-			var(--board-mouse-x) - (var(--square-width) / 2)
+			(var(--mouse-x) - var(--inner-x)) - (var(--square-width) / 2)
 		);
 		--translate-cursor-y: calc(
-			var(--board-mouse-y) - (var(--square-width) / 2)
+			(var(--mouse-y) - var(--inner-y)) - (var(--square-width) / 2)
 		);
 		position: absolute;
 		top: 0;
