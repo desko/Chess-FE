@@ -1,37 +1,55 @@
-import { Fragment, useEffect, useRef, useCallback } from 'react';
+import { Fragment, useEffect, useRef, useCallback, useState } from 'react';
 import './Board.scss';
-import { DEF_POSITION } from '../../common/constants/constants';
+import { DEF_POSITION, TEST_WHITE_POSITION } from '../../common/constants/constants';
 import Piece from '../Piece/Piece';
+import getLegalMoves from '../../common/helpers/getLegalMoves';
+import type { PositionBoard, PieceBoard } from '../../common/constants/constants';
+
+type Square = {
+	y: number;
+	x: number;
+	row: string;
+	col: string;
+	code: string;
+	color: 'white' | 'black';
+};
+
+type Column = Square[];
+type Rows = Column[];
+export type BoardHistory = PositionBoard[];
 
 const Board = () => {
-	type Square = {
-		rowCount: number;
-		colCount: number;
-		row: string;
-		col: string;
-		code: string;
-		color: 'white' | 'black';
-	};
-
-	type Column = Square[];
-	type Rows = Column[];
 
 	const cols = 8;
 	const rows = 8;
 	const charA = 97;
 	const boardArray: Rows = [];
 
-	// component logic
-
 	const innerRef = useRef<HTMLDivElement>(null);
+
+	const [boardHistory, setBoardHistory] = useState<BoardHistory>([TEST_WHITE_POSITION]);
+	const [selectedPiece, setselectedPiece] = useState<PieceBoard | null>(null);
+
+	const legalMoves = getLegalMoves(boardHistory, 'white');
+	console.log(legalMoves);
+	
+
+	const selecPiece = (row: number, col: number) => {
+		const p = boardHistory[boardHistory.length - 1].find(
+			(el: PieceBoard) => el.y === row && el.x === col
+		);
+		// console.log(p);
+		
+		// console.log(legalMoves);
+	};
 
 	for (let i = rows; i > 0; i--) {
 		const colArray: Column = [];
 
 		for (let j = 0; j < cols; j++) {
 			const square: Square = {
-				rowCount: j + 1,
-				colCount: i,
+				y: j + 1,
+				x: i,
 				row: String.fromCharCode(charA + j),
 				col: i.toString(),
 				code: String.fromCharCode(charA + j) + i.toString(),
@@ -100,21 +118,14 @@ const Board = () => {
 				</div>
 
 				<div className='board__figures'>
-					{DEF_POSITION.white.figures.map((piece) => {
+					{boardHistory[boardHistory.length - 1].map((piece) => {
 						return (
 							<Piece
+								handleClick={() => {
+									selecPiece(piece.y, piece.x);
+								}}
 								key={piece.col + piece.row}
-								color='white'
-								piece={piece}
-							/>
-						);
-					})}
-
-					{DEF_POSITION.black.figures.map((piece) => {
-						return (
-							<Piece
-								key={piece.col + piece.row}
-								color='black'
+								color={piece.color}
 								piece={piece}
 							/>
 						);

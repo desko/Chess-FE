@@ -1,5 +1,4 @@
 import { useRef, useState, type ReactElement } from 'react';
-import { throttle } from 'lodash-es';
 import type { PieceBoard } from '../../common/constants/constants';
 import KingWhite from '../../assets/set-online/king-w.svg?react';
 import QueenWhite from '../../assets/set-online/queen-w.svg?react';
@@ -18,6 +17,8 @@ import PawnBlack from '../../assets/set-online/pawn-b.svg?react';
 type Props = {
 	color: 'white' | 'black';
 	piece: PieceBoard;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	handleClick: any;
 };
 
 type pieceMapSide = {
@@ -53,10 +54,9 @@ const pieceMap: PieceMap = {
 	},
 };
 
-const Piece = ({ piece, color }: Props) => {
+const Piece = ({ piece, color, handleClick }: Props) => {
 	const [dragged, setDragged] = useState(false);
 	const pieceRef = useRef<HTMLDivElement>(null);
-	const movePiece = () => {};
 	const dragPieceStart = () => {
 		setDragged(true);
 	};
@@ -113,7 +113,7 @@ const Piece = ({ piece, color }: Props) => {
 	return (
 		<div
 			ref={pieceRef}
-			onClick={movePiece}
+			onClick={handleClick}
 			onMouseDown={dragPieceStart}
 			onTouchStart={dragPieceStart}
 			onMouseUp={dragPieceEnd}
@@ -121,8 +121,8 @@ const Piece = ({ piece, color }: Props) => {
 			onMouseMove={dragPiece}
 			onTouchMove={dragPiece}
 			style={{
-				'--row-num': piece.rowCount,
-				'--col-num': piece.colCount,
+				'--row-num': piece.y,
+				'--col-num': piece.x,
 			}}
 			className={`piece ${piece.piece} ${dragged ? 'dragged' : 'static'}`}
 		>
