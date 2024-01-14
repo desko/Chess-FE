@@ -489,7 +489,7 @@ export const DEF_POSITION: PositionBoard = [
 		color: 'black',
 		piece: 'pawn',
 		x: 1,
-		y: 2,
+		y: 5,
 		isCaptured: false,
 		row: '7',
 		col: 'a',

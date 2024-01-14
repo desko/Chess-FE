@@ -50,10 +50,10 @@ const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
 
     const {x,y} = king;
 
-    let diagonalMainX = Math.max(1, x - y + 1);
-    let diagonalMainY = Math.max(1, y - x + 1);
-    let diagonalOppX = Math.min(8, x + y - 1);
-    let diagonalOppY = Math.max(1, x + y - 8);
+    const diagonalMainX = Math.max(1, x - y + 1);
+    const diagonalMainY = Math.max(1, y - x + 1);
+    const diagonalOppX = Math.min(8, x + y - 1);
+    const diagonalOppY = Math.max(1, x + y - 8);
 
     const piecesCol = latestPosition.filter((piece: PieceBoard) => piece.x === x).sort((a, b) => a.y - b.y);
     const piecesRow = latestPosition.filter((piece: PieceBoard) => piece.y === y).sort((a, b) => a.x - b.x);
@@ -87,7 +87,8 @@ const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
 }
 
 const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
-	const {x,y} = piece;
+	const legalMoves = [];
+	const { x, y } = piece;
 	const latestPosition: PositionBoard[] = [];
 	const previousPosition: PositionBoard[] = [];
 
@@ -95,6 +96,28 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 	if(positionHistory.length > 1) previousPosition.push(positionHistory[positionHistory.length - 2])
 
 	//TODO: calculate en passant and pawn moves
+
+	//check if at starting pos
+
+	if((y === 2 && piece.color === 'black') || (y === 7 && piece.color === 'white')) {
+		const moveTwoCheckWhite = latestPosition[0].filter((piece) => piece.x === x && (piece.y < y && piece.y > y - 3) );
+		const moveTwoCheckBlack = latestPosition[0].filter((piece) => piece.x === x && (piece.y > y && piece.y < y + 3) );
+
+		if(piece.color === 'black') {
+			
+			// legalMoves.push()
+		}
+
+		if(piece.color === 'white') {
+
+			console.log(moveTwoCheckWhite);
+		}
+	}
+	
+	//check if en passant is possible
+	if((y === 5 && piece.color === 'white') || (y === 4 && piece.color === 'black')) {
+
+	}
 };
 
 const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {};
