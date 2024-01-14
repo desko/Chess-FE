@@ -3,7 +3,15 @@ import type { BoardHistory } from '../../components/Board/Board';
 
 type CalculateColors = PieceColor | 'both';
 
-const setPins = (pins: PieceBoard[], piecesDir: PieceBoard[], pinTypeNext: keyof PinTypes, pinTypePrev: keyof PinTypes, pinners: Piece[]) => {
+const clearPins = (position: PositionBoard) => {
+	position.forEach((piece: PieceBoard) => {
+		for (const key of Object.keys(piece.pins)) {
+			piece.pins[key as keyof PinTypes] = false;
+		}
+	});
+}
+
+const setPins = (pins: PositionBoard, piecesDir: PositionBoard, pinTypeNext: keyof PinTypes, pinTypePrev: keyof PinTypes, pinners: Piece[]) => {
 	piecesDir.forEach((piece: PieceBoard, index: number) => {
 		const prevPiece = piecesDir[index - 1];
 		const nextPiece = piecesDir[index + 1];
@@ -79,13 +87,14 @@ const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
 }
 
 const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
-	// const {y, x} = piece;
+	const {x,y} = piece;
 	const latestPosition: PositionBoard[] = [];
 	const previousPosition: PositionBoard[] = [];
 
 	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1])
 	if(positionHistory.length > 1) previousPosition.push(positionHistory[positionHistory.length - 2])
 
+	//TODO: calculate en passant and pawn moves
 };
 
 const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {};
@@ -119,6 +128,8 @@ const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = '
 	piecesToCalculate.forEach((piece: PieceBoard) => {
 		moveMap[piece.piece](positionHistory, piece);
 	});
+	
+	clearPins(latestPosition[0]);
 
 	if(color !== 'both') {
 		calculatePins(latestPosition[0], color);
@@ -126,6 +137,7 @@ const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = '
 		const blackPins = calculatePins(latestPosition[0], 'black');
 		const whitePins = calculatePins(latestPosition[0], 'white');
 	}
+	
 };
 
 export default getLegalMoves;

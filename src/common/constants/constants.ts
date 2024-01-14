@@ -10,6 +10,7 @@ export type PieceBoard = {
 	row: string;
 	col: string;
 	pins: PinTypes;
+	checked?: boolean;
 };
 
 export type PositionBoard = PieceBoard[];
@@ -43,7 +44,8 @@ export const DEF_POSITION: PositionBoard = [
 			LBDiagonal: false,
 			RTDiagonal: false,
 			RBDiagonal: false,
-		}
+		},
+		checked: false,
 	},
 	{
 		color: 'white',
@@ -347,7 +349,8 @@ export const DEF_POSITION: PositionBoard = [
 			LBDiagonal: false,
 			RTDiagonal: false,
 			RBDiagonal: false,
-		}
+		},
+		checked: false,
 	},
 	{
 		color: 'black',
@@ -665,52 +668,52 @@ export const TEST_WHITE_POSITION: PositionBoard = [
 		row: '1',
 		col: 'c',
 		pins: {
-			topVertical: false,
-			bottomVertical: false,
-			leftHorizontal: false,
-			rightHorizontal: false,
-			LTDiagonal: false,
-			LBDiagonal: false,
-			RTDiagonal: false,
-			RBDiagonal: false,
+			topVertical: true,
+			bottomVertical: true,
+			leftHorizontal: true,
+			rightHorizontal: true,
+			LTDiagonal: true,
+			LBDiagonal: true,
+			RTDiagonal: true,
+			RBDiagonal: true,
 		}
 	},
 	{
 		color: 'white',
 		piece: 'queen',
-		x: 6,
-		y: 5,
+		x: 5,
+		y: 4,
 		isCaptured: false,
 		row: '1',
 		col: 'd',
 		pins: {
-			topVertical: false,
-			bottomVertical: false,
-			leftHorizontal: false,
-			rightHorizontal: false,
-			LTDiagonal: false,
-			LBDiagonal: false,
-			RTDiagonal: false,
-			RBDiagonal: false,
+			topVertical: true,
+			bottomVertical: true,
+			leftHorizontal: true,
+			rightHorizontal: true,
+			LTDiagonal: true,
+			LBDiagonal: true,
+			RTDiagonal: true,
+			RBDiagonal: true,
 		}
 	},
 	{
 		color: 'white',
 		piece: 'queen',
-		x: 6,
-		y: 6,
+		x: 4,
+		y: 4,
 		isCaptured: false,
 		row: '1',
 		col: 'f',
 		pins: {
-			topVertical: false,
-			bottomVertical: false,
-			leftHorizontal: false,
-			rightHorizontal: false,
-			LTDiagonal: false,
-			LBDiagonal: false,
-			RTDiagonal: false,
-			RBDiagonal: false,
+			topVertical: true,
+			bottomVertical: true,
+			leftHorizontal: true,
+			rightHorizontal: true,
+			LTDiagonal: true,
+			LBDiagonal: true,
+			RTDiagonal: true,
+			RBDiagonal: true,
 		}
 	},
 	{
@@ -735,8 +738,8 @@ export const TEST_WHITE_POSITION: PositionBoard = [
 	{
 		color: 'black',
 		piece: 'rook',
-		x: 8,
-		y: 5,
+		x: 5,
+		y: 1,
 		isCaptured: false,
 		row: '8',
 		col: 'a',
@@ -754,8 +757,8 @@ export const TEST_WHITE_POSITION: PositionBoard = [
 	{
 		color: 'black',
 		piece: 'bishop',
-		x: 8,
-		y: 8,
+		x: 2,
+		y: 2,
 		isCaptured: false,
 		row: '8',
 		col: 'c',
