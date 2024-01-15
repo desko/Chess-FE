@@ -31,10 +31,7 @@ const Board = () => {
 	const [boardHistory, setBoardHistory] = useState<BoardHistory>([DEF_POSITION]);
 	const [selectedPiece, setselectedPiece] = useState<PieceBoard | null>(null);
 	
-	const legalMoves = getLegalMoves(boardHistory, 'white');
-	// console.log(boardHistory);
-
-	// console.log(boardHistory[0].filter((el) => Object.values(el.pins).includes(true)));
+	const legalMoves = getLegalMoves(boardHistory, 'white', setBoardHistory);
 
 	const selecPiece = (row: number, col: number) => {
 		const p = boardHistory[boardHistory.length - 1].find(
