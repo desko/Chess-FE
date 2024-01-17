@@ -13,7 +13,11 @@ const Home = () => {
 				</SectionHeader>
 
 				<SectionBody>
-					<Board />
+					<Board 
+						color='white'
+						cols={8}
+						rows={8}
+					/>
 				</SectionBody>
 			</Shell>
 		</Section>

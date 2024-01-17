@@ -19,6 +19,7 @@ type Props = {
 	piece: PieceBoard;
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	handleClick: any;
+	setSelectedPiece: React.Dispatch<React.SetStateAction<PieceBoard | null>>;
 };
 
 type pieceMapSide = {
@@ -54,14 +55,18 @@ const pieceMap: PieceMap = {
 	},
 };
 
-const Piece = ({ piece, color, handleClick }: Props) => {
+const Piece = ({ piece, color, handleClick, setSelectedPiece }: Props) => {
 	const [dragged, setDragged] = useState(false);
 	const pieceRef = useRef<HTMLDivElement>(null);
-	const dragPieceStart = () => {
+	const dragPieceStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+		e.stopPropagation();
 		setDragged(true);
+		if(!dragged) setSelectedPiece(piece);
 	};
 
-	const dragPieceEnd = () => {
+	const dragPieceEnd = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+		e.stopPropagation();
+		setSelectedPiece(null);
 		setDragged(false);
 		if (
 			pieceRef.current &&
@@ -82,7 +87,6 @@ const Piece = ({ piece, color, handleClick }: Props) => {
 		e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>
 	) => {
 		if (dragged) {
-			console.log(e);
 			let mouseX, mouseY;
 
 			if ('touches' in e) {
@@ -120,10 +124,10 @@ const Piece = ({ piece, color, handleClick }: Props) => {
 			onTouchEnd={dragPieceEnd}
 			onMouseMove={dragPiece}
 			onTouchMove={dragPiece}
-			style={{
-				'--row-num': piece.y,
+			style={({
+				'--row-num': 8-piece.y+1,
 				'--col-num': piece.x,
-			}}
+			} as unknown) as React.CSSProperties}
 			className={`piece ${piece.piece} ${dragged ? 'dragged' : 'static'}`}
 		>
 			{pieceMap[color][piece.piece]}
