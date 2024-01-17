@@ -23,7 +23,7 @@ const getBoardByColor = (color: PieceColor, rows: number, cols: number) => {
                     row: String.fromCharCode(charA - 1 + x),
                     col: y.toString(),
                     code: String.fromCharCode(charA + x) + y.toString(),
-                    color: (x + y) % 2 === 0 ? 'white' : 'black',
+                    color: (x + y) % 2 === 0 ? 'black' : 'white',
                 };
                 boardArray.push(square);
             }
@@ -38,7 +38,7 @@ const getBoardByColor = (color: PieceColor, rows: number, cols: number) => {
                     row: String.fromCharCode(charA - 1 + x),
                     col: y.toString(),
                     code: String.fromCharCode(charA + x) + y.toString(),
-                    color: (x + y) % 2 === 0 ? 'white' : 'black',
+                    color: (x + y) % 2 === 0 ? 'black' : 'white',
                 };
                 boardArray.push(square);
             }

@@ -3,7 +3,7 @@ import type { BoardHistory } from '../../components/Board/Board';
 
 type CalculateColors = PieceColor | 'both';
 
-const clearPins = (position: PositionBoard, setBoardHistory: React.Dispatch<React.SetStateAction<BoardHistory>>) => {
+const clearPins = (position: PositionBoard) => {
 	position.forEach((piece: PieceBoard) => {
 		for (const key of Object.keys(piece.pins)) {
 			piece.pins[key as keyof PinTypes] = false;
@@ -11,7 +11,7 @@ const clearPins = (position: PositionBoard, setBoardHistory: React.Dispatch<Reac
 	});
 }
 
-const clearLegalMoves = (position: PositionBoard, setBoardHistory: React.Dispatch<React.SetStateAction<BoardHistory>>) => {
+const clearLegalMoves = (position: PositionBoard) => {
 	position.forEach((piece: PieceBoard) => {
 		piece.legalMoves = [];
 	});
@@ -113,11 +113,11 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 
 	if(!pinnedDiagonaly && !pinnedHorizontal) {
 		//check if can move once
-		if(moveOneCheckWhite.length === 0) {
+		if(moveOneCheckWhite.length === 0 && color === 'white') {
 			piece.legalMoves.push({x: piece.x, y: piece.y + 1})
 		}
 		
-		if(moveOneCheckBlack.length === 0) {
+		if(moveOneCheckBlack.length === 0 && color === 'black') {
 			piece.legalMoves.push({x: piece.x, y: piece.y - 1})
 		}
 
@@ -153,9 +153,28 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 	}
 		
 	//check if en passant is possible
-	if((y === 5 && piece.color === 'white') || (y === 4 && piece.color === 'black')) {
+	if((y === 5 && piece.color === 'white') || (y === 4 && piece.color === 'black') && previousPosition.length) {
+		const checkPassantWhite = latestPosition[0].filter((piece: PieceBoard) => piece.y === y && (piece.x === x - 1 || piece.x === x + 1) && piece.color !== color)
+		const checkPassantBlack = latestPosition[0].filter((piece: PieceBoard) => piece.y === y && (piece.x === x - 1 || piece.x === x + 1) && piece.color !== color)
 
-	}
+		checkPassantWhite.forEach((enemyPiece: PieceBoard) => {
+			const prev = previousPosition[0].find((piece: PieceBoard) => piece.id === enemyPiece.id);
+
+			
+			if(prev && prev.y === y + 2 && prev.x === enemyPiece.x) {
+				piece.legalMoves.push({x: enemyPiece.x, y: piece.y + 1});
+			}
+		})
+		
+		checkPassantBlack.forEach((enemyPiece: PieceBoard) => {
+			const prev = previousPosition[0].find((piece: PieceBoard) => piece.id === enemyPiece.id);
+			
+			if(prev && prev.y === y - 2 && prev.x === enemyPiece.x) {
+				piece.legalMoves.push({x: enemyPiece.x, y: piece.y - 1});
+			}
+		})
+
+	}	
 };
 
 const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {};
@@ -177,7 +196,7 @@ const moveMap = {
 	king: calculateKing,
 };
 
-const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = 'both', setBoardHistory: React.Dispatch<React.SetStateAction<BoardHistory>>) => {
+const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = 'both') => {
 	const piecesToCalculate = color !== 'both' ? positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color === color) : positionHistory[positionHistory.length - 1]
 
 	const latestPosition: PositionBoard[] = [];
@@ -186,8 +205,8 @@ const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = '
 	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1])
 	if(positionHistory.length > 1) previousPosition.push(positionHistory[positionHistory.length - 2])
 	
-	clearPins(latestPosition[0], setBoardHistory);
-	clearLegalMoves(latestPosition[0], setBoardHistory);
+	clearPins(latestPosition[0]);
+	clearLegalMoves(latestPosition[0]);
 
 	if(color !== 'both') {
 		calculatePins(latestPosition[0], color);

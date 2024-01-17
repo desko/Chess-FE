@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useRef, useCallback, useState } from 'react';
 import './Board.scss';
-import { DEF_POSITION, TEST_WHITE_POSITION } from '../../common/constants/constants';
+import { DEF_POSITION } from '../../common/constants/constants';
 import Piece from '../Piece/Piece';
 import getLegalMoves from '../../common/helpers/getLegalMoves';
 import type { PositionBoard, PieceBoard, LegalMove, PieceColor } from '../../common/constants/constants';
@@ -25,7 +25,7 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 	const [selectedPiece, setSelectedPiece] = useState<PieceBoard | null>(null);
 	const [selectedColor, setSelectedColor] = useState<PieceColor>(color);	
 	
-	const lMoves = getLegalMoves(boardHistory, 'white', setBoardHistory);
+	const lMoves = getLegalMoves(boardHistory, 'white');
 
 	const selectPiece = useCallback((row: number, col: number) => {
 		const p = boardHistory[boardHistory.length - 1].find(
