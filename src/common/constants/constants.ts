@@ -4,6 +4,7 @@ export type PieceColor = 'white' | 'black';
 export type LegalMove = {
 	x: number;
 	y: number;
+	promotion?: boolean;
 }
 
 export type PieceBoard = {
@@ -164,8 +165,8 @@ export const DEF_POSITION: PositionBoard = [
 	{
 		color: 'white',
 		piece: 'knight',
-		x: 2,
-		y: 1,
+		x: 3,
+		y: 3,
 		isCaptured: false,
 		row: '1',
 		col: 'b',
@@ -270,7 +271,7 @@ export const DEF_POSITION: PositionBoard = [
 		color: 'white',
 		piece: 'pawn',
 		x: 4,
-		y: 2,
+		y: 4,
 		isCaptured: false,
 		row: '2',
 		col: 'd',

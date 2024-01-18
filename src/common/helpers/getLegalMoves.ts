@@ -1,4 +1,4 @@
-import type { PositionBoard, PieceColor, PieceBoard, PinTypes, Piece } from '../constants/constants';
+import type { PositionBoard, PieceColor, PieceBoard, PinTypes, Piece, LegalMove } from '../constants/constants';
 import type { BoardHistory } from '../../components/Board/Board';
 
 type CalculateColors = PieceColor | 'both';
@@ -100,10 +100,6 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1]);
 	if(positionHistory.length > 1) previousPosition.push(positionHistory[positionHistory.length - 2]);
 
-	//TODO: calculate en passant and pawn moves
-
-	//check if at starting pos
-
 	const moveOneCheckWhite = latestPosition[0].filter((piece) => piece.x === x && piece.y === y + 1);
 	const moveOneCheckBlack = latestPosition[0].filter((piece) => piece.x === x && piece.y === y - 1);
 
@@ -122,15 +118,15 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 		}
 
 		//check if can move twice
-		if((y === 7 && piece.color === 'black') || (y === 2 && piece.color === 'white')) {
+		if((y === 7 && color === 'black') || (y === 2 && color === 'white')) {
 			const moveTwoCheckWhite = latestPosition[0].filter((piece) => piece.x === x && (piece.y > y && piece.y < y + 3) );
 			const moveTwoCheckBlack = latestPosition[0].filter((piece) => piece.x === x && (piece.y < y && piece.y > y - 3) );
 	
-			if(piece.color === 'white' && moveTwoCheckWhite.length === 0) {
+			if(color === 'white' && moveTwoCheckWhite.length === 0) {
 				piece.legalMoves.push({x: piece.x, y: piece.y + 2})
 			}
 			
-			if(piece.color === 'black' && moveTwoCheckBlack.length === 0) {
+			if(color === 'black' && moveTwoCheckBlack.length === 0) {
 				piece.legalMoves.push({x: piece.x, y: piece.y - 2})
 			}
 		}
@@ -138,17 +134,26 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 	
 	
 	if(!pinnedVertival && !pinnedHorizontal && !pinnedDiagonaly) {
-
 		//check if capture
 		const checkCaptureWhite = latestPosition[0].filter((piece: PieceBoard) => (piece.x === x - 1 || piece.x === x + 1) && piece.y === y + 1 && piece.color !== color);
 		const checkCaptureBlack = latestPosition[0].filter((piece: PieceBoard) => (piece.x === x - 1 || piece.x === x + 1) && piece.y === y - 1 && piece.color !== color);
-
-		if(checkCaptureWhite.length) {
-			checkCaptureWhite.forEach((capturable) => piece.legalMoves.push({x: capturable.x, y: capturable.y}));
+		
+		if(color === 'white') {
+			checkCaptureWhite.forEach((capturable) => {
+				const legalMove: LegalMove = {x: capturable.x, y: capturable.y};
+				if(y === 7 && color === 'white') legalMove.promotion = true;
+				
+				piece.legalMoves.push(legalMove);
+			});
 		}
-
-		if(checkCaptureBlack.length) {
-			checkCaptureWhite.forEach((capturable) => piece.legalMoves.push({x: capturable.x, y: capturable.y}));
+		
+		if(color === 'black') {
+			checkCaptureBlack.forEach((capturable) => {
+				const legalMove: LegalMove = {x: capturable.x, y: capturable.y};
+				if(y === 2 && color === 'black') legalMove.promotion = true;
+				
+				piece.legalMoves.push(legalMove);
+			});
 		}
 	}
 		
@@ -160,7 +165,6 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 		checkPassantWhite.forEach((enemyPiece: PieceBoard) => {
 			const prev = previousPosition[0].find((piece: PieceBoard) => piece.id === enemyPiece.id);
 
-			
 			if(prev && prev.y === y + 2 && prev.x === enemyPiece.x) {
 				piece.legalMoves.push({x: enemyPiece.x, y: piece.y + 1});
 			}
@@ -174,10 +178,37 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 			}
 		})
 
-	}	
+	}
 };
 
-const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {};
+const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {
+	const { x, y, color } = piece;
+	const latestPosition: PositionBoard[] = [];
+	const isPinned = Object.values(piece.pins).includes(true);
+
+	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1]);
+
+	// Horizontal moves
+	const allMoves: LegalMove[] = [
+		{ x: x + 2, y: y + 1 },
+		{ x: x + 2, y: y - 1 },
+		{ x: x - 2, y: y + 1 },
+		{ x: x - 2, y: y - 1 },
+		{ x: x + 1, y: y + 2 },
+		{ x: x + 1, y: y - 2 },
+		{ x: x - 1, y: y + 2 },
+		{ x: x - 1, y: y - 2 },
+	];
+
+	const validMoves: LegalMove[] = allMoves.filter(move => move.x >= 1 && move.x <= 8 && move.y >= 1 && move.y <= 8);
+ 
+	if(!isPinned) {
+		validMoves.forEach((move: LegalMove) => {
+			const ocupied = latestPosition[0].find((piece: PieceBoard) => piece.x === move.x && piece.y === move.y && piece.color === color);
+			if (!ocupied) piece.legalMoves.push(move);
+		});
+	}
+};
 
 const calculateBishop = (positionHistory: BoardHistory, piece: PieceBoard) => {};
 

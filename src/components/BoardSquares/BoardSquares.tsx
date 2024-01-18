@@ -25,11 +25,7 @@ const BoardSquares = ({boardArray, selectedPiece}: Props) => {
 						return (
 						<div
 							key={'row' + y + 'col' + x}
-							className={`square ${square.code} ${square.x}_${square.y} ${!!contains ? 'legal' : ''} ${
-								(x + y + 1) % 2 === 0
-									? 'white'
-									: 'black'
-							}`}
+							className={`square ${square.code} ${square.x}_${square.y} ${!!contains ? 'legal' : ''} ${square.color}`}
 						></div>
 					);
 				})
