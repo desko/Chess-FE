@@ -50,16 +50,39 @@ const setPins = (pins: PositionBoard, piecesDir: PositionBoard, pinTypeNext: key
 	});
 }
 
+export const getDiagonalStarts = (x: number,y: number) => {
+	// const diagonalMainX = Math.max(1, x - y + 1);
+    // const diagonalMainY = Math.max(1, y - x + 1);
+    // const diagonalOppX = Math.min(8, x + y - 1);
+    // const diagonalOppY = Math.max(1, x + y - 8);
+
+	
+	const diagonalMainX = Math.max(1, x + y - 8);
+    const diagonalMainY = Math.min(8, x + y - 1);
+    const diagonalOppX = Math.min(8, x - y + 8);
+    const diagonalOppY = Math.min(8, 8 - (x - y));
+	
+	
+	// const diagonalMainX = Math.max(1, x - y + 1); 
+    // const diagonalMainY = Math.; 
+    // const diagonalOppX = Math.min(8, 8-x); 
+    // const diagonalOppY = Math.;
+
+	return {
+		diagonalMainX,
+		diagonalMainY,
+		diagonalOppX,
+		diagonalOppY
+	}
+}
+
 const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
     const pins: PieceBoard[] = [];
     const king  = latestPosition.find((piece: PieceBoard) => piece.color === color && piece.piece === 'king') as PieceBoard;
 
     const {x,y} = king;
 
-    const diagonalMainX = Math.max(1, x - y + 1);
-    const diagonalMainY = Math.max(1, y - x + 1);
-    const diagonalOppX = Math.min(8, x + y - 1);
-    const diagonalOppY = Math.max(1, x + y - 8);
+	const {diagonalMainX, diagonalMainY, diagonalOppX, diagonalOppY} = getDiagonalStarts(x,y);
 
     const piecesCol = latestPosition.filter((piece: PieceBoard) => piece.x === x).sort((a, b) => a.y - b.y);
     const piecesRow = latestPosition.filter((piece: PieceBoard) => piece.y === y).sort((a, b) => a.x - b.x);
@@ -69,14 +92,14 @@ const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
     let countMain = 0;
     let countOpp = 0;
 
-    while (diagonalMainX + countMain <= 8 && diagonalMainY + countMain <= 8) {
-        const current = latestPosition.find((el) => el.x === diagonalMainX + countMain && el.y === diagonalMainY + countMain)
+    while (diagonalMainX + countMain <= 8 && diagonalMainY - countMain >= 1) {
+        const current = latestPosition.find((el) => el.x === diagonalMainX + countMain && el.y === diagonalMainY - countMain)
         if (current) piecesDiagonalMain.push(current);
         countMain++;
     }
 
-    while (diagonalOppX - countOpp >= 1 && diagonalOppY + countOpp <= 8) {
-        const current = latestPosition.find((el) => el.x === diagonalOppX - countOpp && el.y === diagonalOppY + countOpp)
+    while (diagonalOppX - countOpp >= 1 && diagonalOppY - countOpp >= 1) {
+        const current = latestPosition.find((el) => el.x === diagonalOppX - countOpp && el.y === diagonalOppY - countOpp)
         if (current) piecesDiagonalOpp.push(current);
         countOpp++;
     }
@@ -210,7 +233,54 @@ const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {
 	}
 };
 
-const calculateBishop = (positionHistory: BoardHistory, piece: PieceBoard) => {};
+const calculateBishop = (positionHistory: BoardHistory, piece: PieceBoard) => {
+	const { x, y, color } = piece;
+	const latestPosition: PositionBoard[] = [];
+	const pinnedDiagonaly = [piece.pins.LBDiagonal, piece.pins.LTDiagonal, piece.pins.RBDiagonal, piece.pins.RTDiagonal].includes(true);
+	const pinnedHorizontal = [piece.pins.leftHorizontal, piece.pins.rightHorizontal].includes(true);
+	const pinnedVerical = [piece.pins.bottomVertical, piece.pins.topVertical].includes(true);
+	const piecesDiagonalMain: (PieceBoard | null)[] = [];
+    const piecesDiagonalOpp: (PieceBoard | null)[] = [];
+
+	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1]);
+
+	const {diagonalMainX, diagonalMainY, diagonalOppX, diagonalOppY} = getDiagonalStarts(x,y);
+	
+	let counterMain = 0;
+	let counterOpp = 0;
+
+	while (diagonalMainX + counterMain <= 8 && diagonalMainY - counterMain >= 1) {
+		const currentX = diagonalMainX + counterMain;
+		const currentY = diagonalMainY - counterMain;
+        const current = latestPosition[0].find((el) => el.x === currentX && el.y === currentY)
+		
+        if (current) {
+			piecesDiagonalMain.push(current)
+		} else {
+			piecesDiagonalMain.push(null);
+		}
+        counterMain++;
+    }
+
+    while (diagonalOppX - counterOpp >= 1 && diagonalOppY - counterOpp >= 1) {
+        const currentX = diagonalOppX - counterOpp;
+		const currentY = diagonalOppY - counterOpp;
+        const current = latestPosition[0].find((el) => el.x === currentX && el.y === currentY)
+
+        if (current) {
+			piecesDiagonalOpp.push(current)
+		} else {
+			piecesDiagonalOpp.push(null);
+		}
+        counterOpp++;
+    }
+
+	//TODO calculate legal moves from diagonals
+	
+	// console.log(piecesDiagonalMain);
+	// console.log(piecesDiagonalOpp);
+	
+};
 
 const calculateRook = (positionHistory: BoardHistory, piece: PieceBoard) => {};
 
