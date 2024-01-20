@@ -4,6 +4,8 @@ import getDiagonalStarts from './getDiagonalsStarts';
 import calculatePawn from './calculatePieces/calculatePawn';
 import calculateKnight from './calculatePieces/calculateKnight';
 import calculateBishop from './calculatePieces/calculateBishop';
+import calculateRook from './calculatePieces/calculateRook';
+import calculateQueen from './calculatePieces/calculateQueen';
 
 type CalculateColors = PieceColor | 'both';
 
@@ -92,10 +94,6 @@ const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
 	
     return pins;
 }
-
-const calculateRook = (positionHistory: BoardHistory, piece: PieceBoard) => {};
-
-const calculateQueen = (positionHistory: BoardHistory, piece: PieceBoard) => {};
 
 const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard) => {};
 
