@@ -123,8 +123,8 @@ export const DEF_POSITION: PositionBoard = [
 	{
 		color: 'white',
 		piece: 'bishop',
-		x: 3,
-		y: 1,
+		x: 6,
+		y: 4,
 		isCaptured: false,
 		row: '1',
 		col: 'c',
