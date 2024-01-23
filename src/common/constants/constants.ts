@@ -17,8 +17,9 @@ export type PieceBoard = {
 	col: string;
 	id: string;
 	pins: PinTypes;
-	checked?: boolean;
 	legalMoves: LegalMove[];
+	checked?: boolean;
+	moved?: boolean;
 };
 
 export type PositionBoard = PieceBoard[];
@@ -39,7 +40,7 @@ export const DEF_POSITION: PositionBoard = [
 		color: 'white',
 		piece: 'king',
 		x: 5,
-		y: 1,
+		y: 5,
 		isCaptured: false,
 		row: '1',
 		col: 'e',
@@ -56,6 +57,7 @@ export const DEF_POSITION: PositionBoard = [
 		},
 		legalMoves: [],
 		checked: false,
+		moved: false,
 	},
 	{
 		color: 'white',
@@ -250,7 +252,7 @@ export const DEF_POSITION: PositionBoard = [
 		color: 'white',
 		piece: 'pawn',
 		x: 3,
-		y: 2,
+		y: 3,
 		isCaptured: false,
 		row: '2',
 		col: 'c',
@@ -292,7 +294,7 @@ export const DEF_POSITION: PositionBoard = [
 		color: 'white',
 		piece: 'pawn',
 		x: 5,
-		y: 2,
+		y: 3,
 		isCaptured: false,
 		row: '2',
 		col: 'e',
@@ -393,6 +395,7 @@ export const DEF_POSITION: PositionBoard = [
 		},
 		legalMoves: [],
 		checked: false,
+		moved: false,
 	},
 	{
 		color: 'black',
@@ -460,8 +463,8 @@ export const DEF_POSITION: PositionBoard = [
 	{
 		color: 'black',
 		piece: 'bishop',
-		x: 3,
-		y: 8,
+		x: 7,
+		y: 4,
 		isCaptured: false,
 		row: '8',
 		col: 'c',
@@ -650,7 +653,7 @@ export const DEF_POSITION: PositionBoard = [
 		color: 'black',
 		piece: 'pawn',
 		x: 6,
-		y: 7,
+		y: 5,
 		isCaptured: false,
 		row: '7',
 		col: 'f',

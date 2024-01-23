@@ -1,11 +1,14 @@
 import type { PositionBoard, PieceColor, PieceBoard, PinTypes, Piece, LegalMove } from '../constants/constants';
 import type { BoardHistory } from '../../components/Board/Board';
 import getDiagonalStarts from './getDiagonalsStarts';
-import calculatePawn from './calculatePieces/calculatePawn';
-import calculateKnight from './calculatePieces/calculateKnight';
+import calculatePawn, { calculatePawnAttacking } from './calculatePieces/calculatePawn';
+import calculateKnight, { calculateKnightAttacking } from './calculatePieces/calculateKnight';
 import calculateBishop from './calculatePieces/calculateBishop';
 import calculateRook from './calculatePieces/calculateRook';
 import calculateQueen from './calculatePieces/calculateQueen';
+import calculateKing, {calculateKingAttacking} from './calculatePieces/calculateKing';
+import { calculateAxisAttacking } from './calculatePieces/calculateAxis';
+import { calculateDiagonalsAttacking } from './calculatePieces/calculateDiagonals';
 
 type CalculateColors = PieceColor | 'both';
 
@@ -95,8 +98,6 @@ const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
     return pins;
 }
 
-const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard) => {};
-
 const moveMap = {
 	pawn: calculatePawn,
 	bishop: calculateBishop,
@@ -107,7 +108,8 @@ const moveMap = {
 };
 
 const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = 'both') => {
-	const piecesToCalculate = color !== 'both' ? positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color === color) : positionHistory[positionHistory.length - 1]
+	const piecesToCalculate = positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color === color);
+	const enemyPieces = positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color !== color);
 
 	const latestPosition: PositionBoard[] = [];
 	const previousPosition: PositionBoard[] = [];
@@ -121,12 +123,45 @@ const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = '
 	if(color !== 'both') {
 		calculatePins(latestPosition[0], color);
 	} else {
-		const blackPins = calculatePins(latestPosition[0], 'black');
-		const whitePins = calculatePins(latestPosition[0], 'white');
+		if(positionHistory.length % 2 === 0) {
+			calculatePins(latestPosition[0], 'white');
+			calculatePins(latestPosition[0], 'black');
+		} else {
+			calculatePins(latestPosition[0], 'black');
+			calculatePins(latestPosition[0], 'white');
+		}
 	}
+
+	//TODO: Add all possible enemy moves and compare king moves to determine legal king moves
+
+	const enemyMoveMap = {
+		pawn: calculatePawnAttacking,
+		bishop: calculateDiagonalsAttacking,
+		knight: calculateKnightAttacking,
+		rook: calculateAxisAttacking,
+		queen: (piece: PieceBoard, latestPosition: PositionBoard) => {
+			const diagMoves = calculateDiagonalsAttacking(piece, latestPosition);
+			const axisMoves = calculateAxisAttacking(piece, latestPosition);
+
+			return [...diagMoves, ...axisMoves];
+		},
+		king: calculateKingAttacking,
+	};
 	
+	const enemyMoves = enemyPieces.map((piece: PieceBoard) => {
+		const moves = enemyMoveMap[piece.piece](piece, latestPosition[0])
+		
+		return moves;
+	});
+	
+	const blockers: LegalMove[] = enemyMoves.reduce((acc, val) => acc.concat(val));
+
 	piecesToCalculate.forEach((piece: PieceBoard) => {
-		const legalMoves = moveMap[piece.piece](positionHistory, piece);
+		if (piece.piece === 'king') {
+			moveMap[piece.piece](positionHistory, piece, blockers);
+			return;
+		}
+		moveMap[piece.piece](positionHistory, piece);
 	});
 	
 };

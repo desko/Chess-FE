@@ -1,4 +1,85 @@
-import type { PieceBoard, PositionBoard } from "../../constants/constants";
+import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/constants";
+
+export const calculateAxisAttacking = (piece: PieceBoard, latestPosition: PositionBoard) => {
+    const attackingMoves: LegalMove[] = [];
+    const { x, y } = piece;
+
+    let leftHorizontal = false;
+    let leftCount = 1;
+    let rightHorizontal = false;
+    let rightCount = 1;
+    let topVertical = false;
+    let topCount = 1;
+    let bottomVertical = false;
+    let bottomCount = 1;
+       
+    while(x - leftCount >= 1 && !leftHorizontal) {
+        const currX = x - leftCount;
+        const current = latestPosition.find((piece: PieceBoard) => piece.x === currX && piece.y === y);
+        
+        if(!current) {
+            attackingMoves.push({x: currX, y: y});
+        }
+
+        if(current) {
+            attackingMoves.push({x: currX, y: y});
+            leftHorizontal = true;
+        }
+        
+        leftCount++;
+    }
+    
+    while(x + rightCount <= 8 && !rightHorizontal) {
+        const currX = x + rightCount;
+        const current = latestPosition.find((piece: PieceBoard) => piece.x === currX && piece.y === y);
+
+        if(!current) {
+            attackingMoves.push({x: currX, y: y});
+        }
+
+        if(current) {
+            attackingMoves.push({x: currX, y: y});
+            rightHorizontal = true;
+        }
+        
+        rightCount++;
+    }
+        
+       
+    while(y + topCount <= 8 && !topVertical) {
+        const currY = y + topCount;
+        const current = latestPosition.find((piece: PieceBoard) => piece.x === x && piece.y === currY);
+
+        if(!current) {
+            attackingMoves.push({x: x, y: currY});
+        }
+
+        if(current) {
+            attackingMoves.push({x: x, y: currY});
+            topVertical = true;
+        }
+        
+        topCount++;
+    }
+    
+    while(y - bottomCount >= 1 && !bottomVertical) {
+        const currY = y - bottomCount;
+        const current = latestPosition.find((piece: PieceBoard) => piece.x === x && piece.y === currY);
+
+        if(!current) {
+            attackingMoves.push({x: x, y: currY});
+        }
+
+        if(current) {
+            attackingMoves.push({x: x, y: currY});
+            bottomVertical = true;
+        }
+        
+        bottomCount++;
+    }
+    
+    return attackingMoves;
+}
 
 const calculateAxis = (piece: PieceBoard, latestPosition: PositionBoard) => {
     const { x, y, color } = piece;

@@ -1,14 +1,9 @@
 import type { BoardHistory } from "../../../components/Board/Board";
 import type { PieceBoard, PositionBoard, LegalMove } from "../../constants/constants";
 
-const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {
-	const { x, y, color } = piece;
-	const latestPosition: PositionBoard[] = [];
-	const isPinned = Object.values(piece.pins).includes(true);
+export const calculateKnightAttacking = (piece: PieceBoard) => {
+	const { x, y } = piece;
 
-	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1]);
-
-	// Horizontal moves
 	const allMoves: LegalMove[] = [
 		{ x: x + 2, y: y + 1 },
 		{ x: x + 2, y: y - 1 },
@@ -20,7 +15,19 @@ const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {
 		{ x: x - 1, y: y - 2 },
 	];
 
-	const validMoves: LegalMove[] = allMoves.filter(move => move.x >= 1 && move.x <= 8 && move.y >= 1 && move.y <= 8);
+	const attackingMoves: LegalMove[] = allMoves.filter(move => move.x >= 1 && move.x <= 8 && move.y >= 1 && move.y <= 8);
+ 
+	return attackingMoves;
+};
+
+const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {
+	const { color } = piece;
+	const latestPosition: PositionBoard[] = [];
+	const isPinned = Object.values(piece.pins).includes(true);
+
+	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1]);
+
+	const validMoves = calculateKnightAttacking(piece);
  
 	if(!isPinned) {
 		validMoves.forEach((move: LegalMove) => {

@@ -1,6 +1,17 @@
 import type { BoardHistory } from "../../../components/Board/Board";
 import type { PieceBoard, PositionBoard, LegalMove } from "../../constants/constants";
 
+export const calculatePawnAttacking = (piece: PieceBoard) => {
+	const {color, x, y} = piece;
+	const attackY = color === 'white' ? y + 1 : y - 1;
+	const moves: LegalMove[] = [
+		{x: x-1, y: attackY},
+		{x: x+1, y: attackY}
+	];
+
+	return moves;
+}
+
 const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 	const { x, y, color } = piece;
 	const latestPosition: PositionBoard[] = [];
