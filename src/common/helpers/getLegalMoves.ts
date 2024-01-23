@@ -9,6 +9,8 @@ import calculateQueen from './calculatePieces/calculateQueen';
 import calculateKing, {calculateKingAttacking} from './calculatePieces/calculateKing';
 import { calculateAxisAttacking } from './calculatePieces/calculateAxis';
 import { calculateDiagonalsAttacking } from './calculatePieces/calculateDiagonals';
+import getKingsDirections from './getKingsDirections';
+import getCheckingPieces from './getCheckingPieces';
 
 type CalculateColors = PieceColor | 'both';
 
@@ -61,34 +63,8 @@ const setPins = (pins: PositionBoard, piecesDir: PositionBoard, pinTypeNext: key
 
 const calculatePins = (latestPosition: PositionBoard, color: PieceColor) => {
     const pins: PieceBoard[] = [];
-    const king  = latestPosition.find((piece: PieceBoard) => piece.color === color && piece.piece === 'king') as PieceBoard;
 
-    const {x,y} = king;
-
-	const {diagonalMainX, diagonalMainY, diagonalOppX, diagonalOppY} = getDiagonalStarts(x,y);
-
-    const piecesCol = latestPosition.filter((piece: PieceBoard) => piece.x === x).sort((a, b) => a.y - b.y);
-    const piecesRow = latestPosition.filter((piece: PieceBoard) => piece.y === y).sort((a, b) => a.x - b.x);
-    const piecesDiagonalMain: PieceBoard[] = [];
-    const piecesDiagonalOpp: PieceBoard[] = [];
-
-    let countMain = 0;
-    let countOpp = 0;
-
-    while (diagonalMainX + countMain <= 8 && diagonalMainY - countMain >= 1) {
-        const current = latestPosition.find((el) => el.x === diagonalMainX + countMain && el.y === diagonalMainY - countMain)
-        if (current) piecesDiagonalMain.push(current);
-        countMain++;
-    }
-
-    while (diagonalOppX - countOpp >= 1 && diagonalOppY - countOpp >= 1) {
-        const current = latestPosition.find((el) => el.x === diagonalOppX - countOpp && el.y === diagonalOppY - countOpp)
-        if (current) piecesDiagonalOpp.push(current);
-        countOpp++;
-    }
-
-    piecesDiagonalMain.sort((a, b) => a.x - b.x);
-    piecesDiagonalOpp.sort((a, b) => b.x - a.x);
+	const { piecesCol, piecesRow, piecesDiagonalMain, piecesDiagonalOpp } = getKingsDirections(latestPosition, color);
 
 	setPins(pins, piecesCol, 'bottomVertical', 'topVertical', ['queen', 'rook']);
 	setPins(pins, piecesRow, 'rightHorizontal', 'leftHorizontal', ['queen', 'rook']);
@@ -107,7 +83,7 @@ const moveMap = {
 	king: calculateKing,
 };
 
-const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = 'both') => {
+const getLegalMoves = (positionHistory: BoardHistory, color: PieceColor) => {
 	const piecesToCalculate = positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color === color);
 	const enemyPieces = positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color !== color);
 
@@ -120,19 +96,9 @@ const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = '
 	clearPins(latestPosition[0]);
 	clearLegalMoves(latestPosition[0]);
 
-	if(color !== 'both') {
-		calculatePins(latestPosition[0], color);
-	} else {
-		if(positionHistory.length % 2 === 0) {
-			calculatePins(latestPosition[0], 'white');
-			calculatePins(latestPosition[0], 'black');
-		} else {
-			calculatePins(latestPosition[0], 'black');
-			calculatePins(latestPosition[0], 'white');
-		}
-	}
+	calculatePins(latestPosition[0], color);
 
-	//TODO: Add all possible enemy moves and compare king moves to determine legal king moves
+	//TODO: Check position for checks from enemy
 
 	const enemyMoveMap = {
 		pawn: calculatePawnAttacking,
@@ -153,6 +119,10 @@ const getLegalMoves = (positionHistory: BoardHistory, color: CalculateColors = '
 		
 		return moves;
 	});
+
+	const checkers = getCheckingPieces(latestPosition[0], color);
+
+	console.log( checkers );
 	
 	const blockers: LegalMove[] = enemyMoves.reduce((acc, val) => acc.concat(val));
 
