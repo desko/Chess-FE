@@ -1,7 +1,7 @@
 import type { Piece, PieceBoard, PieceColor, PositionBoard } from "../constants/constants";
 import getKingsDirections from "./getKingsDirections";
 
-const setChecks = (checks: PositionBoard, piecesDir: PositionBoard, checkers: Piece[]) => {
+const setChecks = (checks: PositionBoard, piecesDir: PositionBoard, checkingPieces: Piece[]) => {
     
     piecesDir.forEach((piece: PieceBoard, index: number) => {
         const prevPiece = piecesDir[index - 1];
@@ -9,7 +9,7 @@ const setChecks = (checks: PositionBoard, piecesDir: PositionBoard, checkers: Pi
         
         if(nextPiece) {
             const nextCheck = nextPiece.color !== piece.color &&
-                checkers.includes(nextPiece.piece) &&
+                checkingPieces.includes(nextPiece.piece) &&
                 piece.piece === 'king';
             
             if (nextCheck && !checks.includes(nextPiece)) checks.push(nextPiece);
@@ -17,7 +17,7 @@ const setChecks = (checks: PositionBoard, piecesDir: PositionBoard, checkers: Pi
         
         if(prevPiece) {
             const prevCheck = prevPiece.color !== piece.color &&
-                checkers.includes(prevPiece.piece) &&
+                checkingPieces.includes(prevPiece.piece) &&
                 piece.piece === 'king';
 
             if (prevCheck && !checks.includes(prevPiece)) checks.push(prevPiece);

@@ -1,6 +1,5 @@
 import type { PositionBoard, PieceColor, PieceBoard, PinTypes, Piece, LegalMove } from '../constants/constants';
 import type { BoardHistory } from '../../components/Board/Board';
-import getDiagonalStarts from './getDiagonalsStarts';
 import calculatePawn, { calculatePawnAttacking } from './calculatePieces/calculatePawn';
 import calculateKnight, { calculateKnightAttacking } from './calculatePieces/calculateKnight';
 import calculateBishop from './calculatePieces/calculateBishop';
@@ -11,8 +10,7 @@ import { calculateAxisAttacking } from './calculatePieces/calculateAxis';
 import { calculateDiagonalsAttacking } from './calculatePieces/calculateDiagonals';
 import getKingsDirections from './getKingsDirections';
 import getCheckingPieces from './getCheckingPieces';
-
-type CalculateColors = PieceColor | 'both';
+import calculateStopCheck from './calculatePieces/calculateStopCheck';
 
 const clearPins = (position: PositionBoard) => {
 	position.forEach((piece: PieceBoard) => {
@@ -95,10 +93,7 @@ const getLegalMoves = (positionHistory: BoardHistory, color: PieceColor) => {
 	
 	clearPins(latestPosition[0]);
 	clearLegalMoves(latestPosition[0]);
-
 	calculatePins(latestPosition[0], color);
-
-	//TODO: Check position for checks from enemy
 
 	const enemyMoveMap = {
 		pawn: calculatePawnAttacking,
@@ -119,19 +114,29 @@ const getLegalMoves = (positionHistory: BoardHistory, color: PieceColor) => {
 		
 		return moves;
 	});
-
-	const checkers = getCheckingPieces(latestPosition[0], color);
-
-	console.log( checkers );
 	
 	const blockers: LegalMove[] = enemyMoves.reduce((acc, val) => acc.concat(val));
+
+	const checkingPieces = getCheckingPieces(latestPosition[0], color);
+	const isChecked = !!checkingPieces.length;
+
+	if (checkingPieces.length === 2) {
+		clearLegalMoves(latestPosition[0]);
+		const king = latestPosition[0].find((piece: PieceBoard) => piece.piece === 'king' && piece.color === color);
+		if(king) {
+			moveMap[king.piece](positionHistory, king, blockers);
+		}
+	}
+	
+	const stopCheck =  checkingPieces.length === 1 ? calculateStopCheck(latestPosition[0], checkingPieces, color) : [];
 
 	piecesToCalculate.forEach((piece: PieceBoard) => {
 		if (piece.piece === 'king') {
 			moveMap[piece.piece](positionHistory, piece, blockers);
 			return;
 		}
-		moveMap[piece.piece](positionHistory, piece);
+		         
+		moveMap[piece.piece](positionHistory, piece, isChecked, stopCheck);
 	});
 	
 };

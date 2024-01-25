@@ -1,5 +1,6 @@
 import type { BoardHistory } from "../../../components/Board/Board";
 import type { PieceBoard, PositionBoard, LegalMove } from "../../constants/constants";
+import getBlockerMoves from "./getBlockerMoves";
 
 export const calculatePawnAttacking = (piece: PieceBoard) => {
 	const {color, x, y} = piece;
@@ -12,7 +13,7 @@ export const calculatePawnAttacking = (piece: PieceBoard) => {
 	return moves;
 }
 
-const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
+const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isChecked: boolean, stopCheck: LegalMove[]) => {
 	const { x, y, color } = piece;
 	const latestPosition: PositionBoard[] = [];
 	const previousPosition: PositionBoard[] = [];
@@ -97,7 +98,11 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard) => {
 				piece.legalMoves.push({x: enemyPiece.x, y: piece.y - 1});
 			}
 		})
+	}
 
+	if(isChecked) {
+		const moves = getBlockerMoves(piece, stopCheck);
+		piece.legalMoves = moves;
 	}
 };
 

@@ -1,5 +1,6 @@
 import type { BoardHistory } from "../../../components/Board/Board";
 import type { PieceBoard, PositionBoard, LegalMove } from "../../constants/constants";
+import getBlockerMoves from "./getBlockerMoves";
 
 export const calculateKnightAttacking = (piece: PieceBoard) => {
 	const { x, y } = piece;
@@ -20,7 +21,7 @@ export const calculateKnightAttacking = (piece: PieceBoard) => {
 	return attackingMoves;
 };
 
-const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {
+const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard, isChecked: boolean, stopCheck: LegalMove[]) => {
 	const { color } = piece;
 	const latestPosition: PositionBoard[] = [];
 	const isPinned = Object.values(piece.pins).includes(true);
@@ -34,6 +35,11 @@ const calculateKnight = (positionHistory: BoardHistory, piece: PieceBoard) => {
 			const ocupied = latestPosition[0].find((piece: PieceBoard) => piece.x === move.x && piece.y === move.y && piece.color === color);
 			if (!ocupied) piece.legalMoves.push(move);
 		});
+	}
+
+	if(isChecked) {
+		const moves = getBlockerMoves(piece, stopCheck);
+		piece.legalMoves = moves;
 	}
 };
 
