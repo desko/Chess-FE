@@ -1,6 +1,8 @@
+import { ReactElement } from "react";
+
 type Props = {
 	type?: 'submit' | 'button' | 'reset';
-	text: string;
+	children: ReactElement | string;
 	modifiers?: string[];
 	onClick?: React.MouseEventHandler<HTMLButtonElement>;
 	disabled?: boolean;
@@ -8,7 +10,7 @@ type Props = {
 
 const Button = ({
 	type = undefined,
-	text,
+	children,
 	modifiers = undefined,
 	onClick,
 	disabled = false,
@@ -20,7 +22,7 @@ const Button = ({
 			onClick={onClick}
 			disabled={disabled}
 		>
-			{text}
+			{children}
 		</button>
 	);
 };

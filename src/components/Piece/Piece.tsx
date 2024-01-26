@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactElement } from 'react';
-import type { PieceBoard } from '../../common/constants/constants';
+import type { PieceBoard, PieceColor } from '../../common/constants/constants';
 import KingWhite from '../../assets/set-online/king-w.svg?react';
 import QueenWhite from '../../assets/set-online/queen-w.svg?react';
 import RookWhite from '../../assets/set-online/rook-w.svg?react';
@@ -13,13 +13,19 @@ import RookBlack from '../../assets/set-online/rook-b.svg?react';
 import BishopBlack from '../../assets/set-online/bishop-b.svg?react';
 import KnightBlack from '../../assets/set-online/knight-b.svg?react';
 import PawnBlack from '../../assets/set-online/pawn-b.svg?react';
+import type { BoardRect } from '../../hooks/useBoardSize';
+import { Coords } from '../Board/Board';
+
+type HandleClick = (e: React.MouseEvent<HTMLDivElement>) => void;
 
 type Props = {
+	boardRect: BoardRect;
+	setNewPosition: (boardRect: BoardRect, coords: Coords, piece: PieceBoard, boardFlip: PieceColor) => void;
 	color: 'white' | 'black';
 	piece: PieceBoard;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	handleClick: any;
+	handleClick: HandleClick;
 	setSelectedPiece: React.Dispatch<React.SetStateAction<PieceBoard | null>>;
+	boardFlip: PieceColor;
 };
 
 type pieceMapSide = {
@@ -55,7 +61,7 @@ const pieceMap: PieceMap = {
 	},
 };
 
-const Piece = ({ piece, color, handleClick, setSelectedPiece }: Props) => {
+const Piece = ({ boardRect, setNewPosition, piece, color, handleClick, setSelectedPiece, boardFlip }: Props) => {
 	const [dragged, setDragged] = useState(false);
 	const pieceRef = useRef<HTMLDivElement>(null);
 	const dragPieceStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
@@ -66,8 +72,23 @@ const Piece = ({ piece, color, handleClick, setSelectedPiece }: Props) => {
 
 	const dragPieceEnd = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
 		e.stopPropagation();
-		setSelectedPiece(null);
+		
 		setDragged(false);
+
+		const mouseCoords: Coords = {
+			x: 0,
+			y: 0,
+		}
+
+		if ('touches' in e) {
+			const { pageX, pageY } = e.touches[0];
+			mouseCoords.x = pageX;
+			mouseCoords.y = pageY;
+		} else {
+			mouseCoords.x = e.pageX;
+			mouseCoords.y = e.pageY;
+		}
+
 		if (
 			pieceRef.current &&
 			(pieceRef.current as HTMLElement) instanceof HTMLElement
@@ -81,6 +102,8 @@ const Piece = ({ piece, color, handleClick, setSelectedPiece }: Props) => {
 				''
 			);
 		}
+
+		setNewPosition(boardRect, mouseCoords, piece, boardFlip);
 	};
 
 	const dragPiece = (
@@ -114,6 +137,19 @@ const Piece = ({ piece, color, handleClick, setSelectedPiece }: Props) => {
 		}
 	};
 
+	const coordMapBoardRotate = {
+		white: {
+			x: piece.x,
+			y: 8 - piece.y + 1,
+		},
+		black: {
+			x: 8 - piece.x + 1,
+			y: piece.y,
+		}
+	};
+
+	if(piece.isCaptured) return;
+
 	return (
 		<div
 			ref={pieceRef}
@@ -125,8 +161,8 @@ const Piece = ({ piece, color, handleClick, setSelectedPiece }: Props) => {
 			onMouseMove={dragPiece}
 			onTouchMove={dragPiece}
 			style={({
-				'--row-num': 8-piece.y+1,
-				'--col-num': piece.x,
+				'--col-num': coordMapBoardRotate[boardFlip].x,
+				'--row-num': coordMapBoardRotate[boardFlip].y,
 			} as unknown) as React.CSSProperties}
 			className={`piece ${piece.piece} ${dragged ? 'dragged' : 'static'}`}
 		>

@@ -1,12 +1,20 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+export type BoardRect = {
+	x: number;
+	y: number;
+	width: number;
+};
 
 const useBoardSize = (ref: React.RefObject<HTMLDivElement>) => {
+	const [boardRect, setBoardRect] = useState<BoardRect>();
+	
     const handleBoardSizes = useCallback(() => {
 		if (
 			ref.current &&
-			(ref.current as HTMLElement) instanceof HTMLElement
+			ref.current instanceof HTMLElement
 		) {
-			(ref.current as HTMLElement).style.setProperty(
+			ref.current.style.setProperty(
 				'--inner-size',
 				(ref.current as HTMLElement).clientWidth + 'px'
 			);
@@ -17,14 +25,20 @@ const useBoardSize = (ref: React.RefObject<HTMLDivElement>) => {
 
 			const boardTop = docTop + top;
 
-			(ref.current as HTMLElement).style.setProperty(
+			ref.current.style.setProperty(
 				'--inner-x',
 				boardLeft + 'px'
 			);
-			(ref.current as HTMLElement).style.setProperty(
+			ref.current.style.setProperty(
 				'--inner-y',
 				boardTop + 'px'
 			);
+
+			setBoardRect({
+				x: boardLeft,
+				y: boardTop,
+				width: ref.current.clientWidth
+			})
 		}
 	}, [ref]);
 
@@ -36,6 +50,8 @@ const useBoardSize = (ref: React.RefObject<HTMLDivElement>) => {
 			window.removeEventListener('resize', handleBoardSizes);
 		};
 	}, [handleBoardSizes]);
+
+	return boardRect;
 }
 
 export default useBoardSize;

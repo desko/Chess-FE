@@ -20,7 +20,7 @@ export const calculateKingAttacking = (piece: PieceBoard) => {
     return attackingMoves;
 }
 
-const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, blockers: LegalMove[]) => {
+const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isChecked: boolean, blockers: LegalMove[]) => {
     const { color } = piece;
     const latestPosition: PositionBoard[] = [];
 

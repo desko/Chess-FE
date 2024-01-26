@@ -1,3 +1,7 @@
 .section {
 	padding: 10rem 0;
+
+	@media (max-width: 1023px) {
+		padding: 5rem 0;
+	}
 }

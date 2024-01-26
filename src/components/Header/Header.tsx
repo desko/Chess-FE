@@ -47,7 +47,7 @@ const Header = ({ title }: { title: string }) => {
 						)}
 
 						{loggedIn && (
-							<Button text='logout' onClick={logoutUser} />
+							<Button onClick={logoutUser} >logout</Button>
 						)}
 
 						<div className='header__menu'>

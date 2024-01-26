@@ -119,25 +119,25 @@ const getLegalMoves = (positionHistory: BoardHistory, color: PieceColor) => {
 
 	const checkingPieces = getCheckingPieces(latestPosition[0], color);
 	const isChecked = !!checkingPieces.length;
-
-	if (checkingPieces.length === 2) {
-		clearLegalMoves(latestPosition[0]);
-		const king = latestPosition[0].find((piece: PieceBoard) => piece.piece === 'king' && piece.color === color);
-		if(king) {
-			moveMap[king.piece](positionHistory, king, blockers);
-		}
-	}
 	
 	const stopCheck =  checkingPieces.length === 1 ? calculateStopCheck(latestPosition[0], checkingPieces, color) : [];
 
 	piecesToCalculate.forEach((piece: PieceBoard) => {
 		if (piece.piece === 'king') {
-			moveMap[piece.piece](positionHistory, piece, blockers);
+			moveMap[piece.piece](positionHistory, piece, isChecked, blockers);
 			return;
 		}
 		         
 		moveMap[piece.piece](positionHistory, piece, isChecked, stopCheck);
 	});
+
+	if (checkingPieces.length === 2) {
+		clearLegalMoves(latestPosition[0]);
+		const king = latestPosition[0].find((piece: PieceBoard) => piece.piece === 'king' && piece.color === color);
+		if(king) {
+			moveMap[king.piece](positionHistory, king, isChecked, blockers);
+		}
+	}
 	
 };
 

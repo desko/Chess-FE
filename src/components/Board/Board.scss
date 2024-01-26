@@ -44,6 +44,12 @@
 		}
 	}
 
+	.board__turns {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
 	.board__figures {
 		font-size: 0;
 		position: absolute;
@@ -76,6 +82,7 @@
 
 		&.static {
 			transform: translate(var(--translate-x), var(--translate-y));
+			transition: transform .3s;
 		}
 
 		&.dragged {

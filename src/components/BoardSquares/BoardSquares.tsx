@@ -1,6 +1,7 @@
 import type { PieceBoard } from "../../common/constants/constants";
 import type { Board } from "../../common/helpers/getBoardByColor";
 import type { LegalMove } from "../../common/constants/constants";
+import type { BoardRect } from "../../hooks/useBoardSize";
 
 type Props = {
 	boardArray: Board;

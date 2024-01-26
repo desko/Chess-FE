@@ -10,13 +10,13 @@ import Signup from './pages/Signup';
 function App() {
 	return (
 		<Wrapper>
+			<Header title='ChessX' />
 			<Routes>
 				<Route path={'/'} element={<Home />} />
 				<Route path={'/login'} element={<Login />} />
 				<Route path={'/signup'} element={<Signup />} />
 			</Routes>
 
-			<Header title='ChessX' />
 
 			<Outlet />
 		</Wrapper>

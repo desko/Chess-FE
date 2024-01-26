@@ -101,7 +101,12 @@ const FormSignup = () => {
 				</div>
 
 				<div className='form__actions'>
-					<Button type='submit' text='Sign Up' disabled={!isValid} />
+					<Button
+						type='submit'
+						disabled={!isValid}
+					>
+						Sign Up
+					</Button>
 					{isSubmitting && <Loader />}
 				</div>
 			</form>
