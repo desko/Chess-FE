@@ -1,4 +1,4 @@
-import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/constants";
+import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/positionConstant";
 
 export const calculateDiagonalsAttacking = (piece: PieceBoard, latestPosition: PositionBoard) => {
     const attackingMoves: LegalMove[] = [];
@@ -108,7 +108,7 @@ const calculateDiagonals = (piece: PieceBoard, latestPosition: PositionBoard) =>
             while(x - diagCountLT >= 1 && y + diagCountLT <= 8 && !diagLT) {
                 const currX = x - diagCountLT;
                 const currY = y + diagCountLT;
-                const current = latestPosition.find((piece: PieceBoard) => piece.x === currX && piece.y === currY);
+                const current = latestPosition.filter((piece: PieceBoard) => piece.x === currX && piece.y === currY && !piece.isCaptured)[0];
                 
                 if(!current) {
                     piece.legalMoves.push({x: currX, y: currY});

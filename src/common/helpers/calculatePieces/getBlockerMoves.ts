@@ -1,4 +1,4 @@
-import { LegalMove, PieceBoard } from '../../constants/constants';
+import { LegalMove, PieceBoard } from '../../constants/positionConstant';
 
 const getBlockerMoves = (piece: PieceBoard, stopCheck: LegalMove[]) => {
     const { legalMoves } = piece;

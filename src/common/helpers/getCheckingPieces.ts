@@ -1,4 +1,4 @@
-import type { Piece, PieceBoard, PieceColor, PositionBoard } from "../constants/constants";
+import type { Piece, PieceBoard, PieceColor, PositionBoard } from "../constants/positionConstant";
 import getKingsDirections from "./getKingsDirections";
 
 const setChecks = (checks: PositionBoard, piecesDir: PositionBoard, checkingPieces: Piece[]) => {

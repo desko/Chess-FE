@@ -61,6 +61,14 @@
 		aspect-ratio: 1/1;
 	}
 
+	.board__figures.has-selected .piece {
+		pointer-events: none;
+		
+		&.selected {
+			pointer-events: all;
+		}
+	}
+
 	.board__figures .piece {
 		cursor: grab;
 		--row-num: 1;

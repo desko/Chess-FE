@@ -1,4 +1,4 @@
-import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/constants";
+import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/positionConstant";
 
 export const calculateAxisAttacking = (piece: PieceBoard, latestPosition: PositionBoard) => {
     const attackingMoves: LegalMove[] = [];
@@ -15,7 +15,7 @@ export const calculateAxisAttacking = (piece: PieceBoard, latestPosition: Positi
        
     while(x - leftCount >= 1 && !leftHorizontal) {
         const currX = x - leftCount;
-        const current = latestPosition.find((piece: PieceBoard) => piece.x === currX && piece.y === y);
+        const current = latestPosition.filter((piece: PieceBoard) => piece.x === currX && piece.y === y && !piece.isCaptured)[0];
         
         if(!current) {
             attackingMoves.push({x: currX, y: y});
@@ -31,7 +31,7 @@ export const calculateAxisAttacking = (piece: PieceBoard, latestPosition: Positi
     
     while(x + rightCount <= 8 && !rightHorizontal) {
         const currX = x + rightCount;
-        const current = latestPosition.find((piece: PieceBoard) => piece.x === currX && piece.y === y);
+        const current = latestPosition.filter((piece: PieceBoard) => piece.x === currX && piece.y === y && !piece.isCaptured)[0];
 
         if(!current) {
             attackingMoves.push({x: currX, y: y});
@@ -48,7 +48,7 @@ export const calculateAxisAttacking = (piece: PieceBoard, latestPosition: Positi
        
     while(y + topCount <= 8 && !topVertical) {
         const currY = y + topCount;
-        const current = latestPosition.find((piece: PieceBoard) => piece.x === x && piece.y === currY);
+        const current = latestPosition.filter((piece: PieceBoard) => piece.x === x && piece.y === currY && !piece.isCaptured)[0];
 
         if(!current) {
             attackingMoves.push({x: x, y: currY});
@@ -64,7 +64,7 @@ export const calculateAxisAttacking = (piece: PieceBoard, latestPosition: Positi
     
     while(y - bottomCount >= 1 && !bottomVertical) {
         const currY = y - bottomCount;
-        const current = latestPosition.find((piece: PieceBoard) => piece.x === x && piece.y === currY);
+        const current = latestPosition.filter((piece: PieceBoard) => piece.x === x && piece.y === currY && !piece.isCaptured)[0];
 
         if(!current) {
             attackingMoves.push({x: x, y: currY});

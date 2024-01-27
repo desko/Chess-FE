@@ -1,5 +1,5 @@
 import type { BoardHistory } from "../../../components/Board/Board";
-import type { PieceBoard, PositionBoard, LegalMove } from "../../constants/constants";
+import type { PieceBoard, PositionBoard, LegalMove } from "../../constants/positionConstant";
 import getBlockerMoves from "./getBlockerMoves";
 
 export const calculatePawnAttacking = (piece: PieceBoard) => {
@@ -21,8 +21,8 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 	if(positionHistory.length > 0) latestPosition.push(positionHistory[positionHistory.length - 1]);
 	if(positionHistory.length > 1) previousPosition.push(positionHistory[positionHistory.length - 2]);
 
-	const moveOneCheckWhite = latestPosition[0].filter((piece) => piece.x === x && piece.y === y + 1);
-	const moveOneCheckBlack = latestPosition[0].filter((piece) => piece.x === x && piece.y === y - 1);
+	const moveOneCheckWhite = latestPosition[0].filter((piece) => piece.x === x && piece.y === y + 1 && !piece.isCaptured);
+	const moveOneCheckBlack = latestPosition[0].filter((piece) => piece.x === x && piece.y === y - 1 && !piece.isCaptured);
 
 	const pinnedDiagonaly = [piece.pins.LBDiagonal, piece.pins.LTDiagonal, piece.pins.RBDiagonal, piece.pins.RTDiagonal].includes(true);
 	const pinnedHorizontal = [piece.pins.leftHorizontal, piece.pins.rightHorizontal].includes(true);
@@ -40,8 +40,8 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 
 		//check if can move twice
 		if((y === 7 && color === 'black') || (y === 2 && color === 'white')) {
-			const moveTwoCheckWhite = latestPosition[0].filter((piece) => piece.x === x && (piece.y > y && piece.y < y + 3) );
-			const moveTwoCheckBlack = latestPosition[0].filter((piece) => piece.x === x && (piece.y < y && piece.y > y - 3) );
+			const moveTwoCheckWhite = latestPosition[0].filter((piece) => piece.x === x && (piece.y > y && piece.y < y + 3) && !piece.isCaptured );
+			const moveTwoCheckBlack = latestPosition[0].filter((piece) => piece.x === x && (piece.y < y && piece.y > y - 3) && !piece.isCaptured );
 	
 			if(color === 'white' && moveTwoCheckWhite.length === 0) {
 				piece.legalMoves.push({x: piece.x, y: piece.y + 2})
@@ -56,8 +56,8 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 	
 	if(!pinnedVertival && !pinnedHorizontal && !pinnedDiagonaly) {
 		//check if capture
-		const checkCaptureWhite = latestPosition[0].filter((piece: PieceBoard) => (piece.x === x - 1 || piece.x === x + 1) && piece.y === y + 1 && piece.color !== color);
-		const checkCaptureBlack = latestPosition[0].filter((piece: PieceBoard) => (piece.x === x - 1 || piece.x === x + 1) && piece.y === y - 1 && piece.color !== color);
+		const checkCaptureWhite = latestPosition[0].filter((piece: PieceBoard) => (piece.x === x - 1 || piece.x === x + 1) && piece.y === y + 1 && piece.color !== color && !piece.isCaptured);
+		const checkCaptureBlack = latestPosition[0].filter((piece: PieceBoard) => (piece.x === x - 1 || piece.x === x + 1) && piece.y === y - 1 && piece.color !== color && !piece.isCaptured);
 		
 		if(color === 'white') {
 			checkCaptureWhite.forEach((capturable) => {
@@ -80,8 +80,8 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 		
 	//check if en passant is possible
 	if((y === 5 && piece.color === 'white') || (y === 4 && piece.color === 'black') && previousPosition.length) {
-		const checkPassantWhite = latestPosition[0].filter((piece: PieceBoard) => piece.y === y && (piece.x === x - 1 || piece.x === x + 1) && piece.color !== color)
-		const checkPassantBlack = latestPosition[0].filter((piece: PieceBoard) => piece.y === y && (piece.x === x - 1 || piece.x === x + 1) && piece.color !== color)
+		const checkPassantWhite = latestPosition[0].filter((piece: PieceBoard) => piece.y === y && (piece.x === x - 1 || piece.x === x + 1) && piece.color !== color && !piece.isCaptured);
+		const checkPassantBlack = latestPosition[0].filter((piece: PieceBoard) => piece.y === y && (piece.x === x - 1 || piece.x === x + 1) && piece.color !== color && !piece.isCaptured);
 
 		checkPassantWhite.forEach((enemyPiece: PieceBoard) => {
 			const prev = previousPosition[0].find((piece: PieceBoard) => piece.id === enemyPiece.id);

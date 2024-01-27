@@ -1,5 +1,5 @@
 import { useRef, useState, type ReactElement } from 'react';
-import type { PieceBoard, PieceColor } from '../../common/constants/constants';
+import type { PieceBoard, PieceColor } from '../../common/constants/positionConstant';
 import KingWhite from '../../assets/set-online/king-w.svg?react';
 import QueenWhite from '../../assets/set-online/queen-w.svg?react';
 import RookWhite from '../../assets/set-online/rook-w.svg?react';
@@ -24,6 +24,7 @@ type Props = {
 	color: 'white' | 'black';
 	piece: PieceBoard;
 	handleClick: HandleClick;
+	selected: boolean;
 	setSelectedPiece: React.Dispatch<React.SetStateAction<PieceBoard | null>>;
 	boardFlip: PieceColor;
 };
@@ -61,7 +62,7 @@ const pieceMap: PieceMap = {
 	},
 };
 
-const Piece = ({ boardRect, setNewPosition, piece, color, handleClick, setSelectedPiece, boardFlip }: Props) => {
+const Piece = ({ boardRect, setNewPosition, piece, color, handleClick, selected, setSelectedPiece, boardFlip }: Props) => {
 	const [dragged, setDragged] = useState(false);
 	const pieceRef = useRef<HTMLDivElement>(null);
 	const dragPieceStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
@@ -164,7 +165,7 @@ const Piece = ({ boardRect, setNewPosition, piece, color, handleClick, setSelect
 				'--col-num': coordMapBoardRotate[boardFlip].x,
 				'--row-num': coordMapBoardRotate[boardFlip].y,
 			} as unknown) as React.CSSProperties}
-			className={`piece ${piece.piece} ${dragged ? 'dragged' : 'static'}`}
+			className={`piece ${piece.piece} ${selected && 'selected'} ${dragged ? 'dragged' : 'static'}`}
 		>
 			{pieceMap[color][piece.piece]}
 		</div>

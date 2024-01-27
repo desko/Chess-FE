@@ -1,5 +1,5 @@
 import type { BoardHistory } from "../../../components/Board/Board";
-import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/constants";
+import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/positionConstant";
 
 export const calculateKingAttacking = (piece: PieceBoard) => {
     const {x,y} = piece;

@@ -1,5 +1,5 @@
-import type { PositionBoard, PieceColor, PieceBoard, PinTypes, Piece, LegalMove } from '../constants/constants';
-import type { BoardHistory } from '../../components/Board/Board';
+import type { PositionBoard, PieceColor, PieceBoard, PinTypes, Piece, LegalMove } from '../constants/positionConstant';
+import type { BoardHistory, BoardSounds, SoundRefs } from '../../components/Board/Board';
 import calculatePawn, { calculatePawnAttacking } from './calculatePieces/calculatePawn';
 import calculateKnight, { calculateKnightAttacking } from './calculatePieces/calculateKnight';
 import calculateBishop from './calculatePieces/calculateBishop';
@@ -11,6 +11,7 @@ import { calculateDiagonalsAttacking } from './calculatePieces/calculateDiagonal
 import getKingsDirections from './getKingsDirections';
 import getCheckingPieces from './getCheckingPieces';
 import calculateStopCheck from './calculatePieces/calculateStopCheck';
+import playSoundsBoard from './playSoundsBoard';
 
 const clearPins = (position: PositionBoard) => {
 	position.forEach((piece: PieceBoard) => {
@@ -81,6 +82,7 @@ const moveMap = {
 	king: calculateKing,
 };
 
+// const getLegalMoves = (positionHistory: BoardHistory, color: PieceColor, boardSounds: BoardSounds, soundRefs: SoundRefs, setBoardSounds: React.Dispatch<React.SetStateAction<BoardSounds>>) => {
 const getLegalMoves = (positionHistory: BoardHistory, color: PieceColor) => {
 	const piecesToCalculate = positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color === color);
 	const enemyPieces = positionHistory[positionHistory.length - 1].filter((piece: PieceBoard) => piece.color !== color);
@@ -130,6 +132,11 @@ const getLegalMoves = (positionHistory: BoardHistory, color: PieceColor) => {
 		         
 		moveMap[piece.piece](positionHistory, piece, isChecked, stopCheck);
 	});
+
+	//TODO: play check sound when there are cheking pieces
+	// if (checkingPieces.length > 0) {
+	// 	playSoundsBoard(soundRefs, boardSounds, setBoardSounds);
+	// }
 
 	if (checkingPieces.length === 2) {
 		clearLegalMoves(latestPosition[0]);

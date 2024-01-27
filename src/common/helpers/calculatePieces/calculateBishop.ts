@@ -1,5 +1,5 @@
 import type { BoardHistory } from "../../../components/Board/Board";
-import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/constants";
+import type { LegalMove, PieceBoard, PositionBoard } from "../../constants/positionConstant";
 import calculateDiagonals from "./calculateDiagonals";
 import getBlockerMoves from "./getBlockerMoves";
 

@@ -1,4 +1,4 @@
-import type { LegalMove, PieceBoard, PieceColor, PositionBoard } from "../../constants/constants";
+import type { LegalMove, PieceBoard, PieceColor, PositionBoard } from "../../constants/positionConstant";
 
 const calculateStopCheck = (latestPosition: PositionBoard, checkingPieces: PieceBoard[], color: PieceColor) => {
 	const king = latestPosition.find((piece: PieceBoard) => piece.piece === 'king' && piece.color === color);

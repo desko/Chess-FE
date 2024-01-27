@@ -1,4 +1,4 @@
-import { PieceBoard, PieceColor, PositionBoard } from "../constants/constants";
+import { PieceBoard, PieceColor, PositionBoard } from "../constants/positionConstant";
 import getDiagonalStarts from "./getDiagonalsStarts";
 
 const getKingsDirections = (latestPosition: PositionBoard, color: PieceColor) => {

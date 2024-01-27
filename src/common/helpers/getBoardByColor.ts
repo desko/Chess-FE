@@ -1,4 +1,4 @@
-import { PieceColor } from "../constants/constants";
+import { PieceColor } from "../constants/positionConstant";
 
 type Square = {
 	y: number;
