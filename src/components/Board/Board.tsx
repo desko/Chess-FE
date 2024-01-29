@@ -65,7 +65,7 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 	const setNewPosition = (boardRect: BoardRect, coords: Coords, piece: PieceBoard, boardFlip: PieceColor) => {
 		const {x: boardX, y: boardY, width: boardW} = boardRect;
 		const {x: mouseX, y: mouseY} = coords;
-		const {x: pieceX, y: pieceY, id: pieceId} = piece;
+		const {x: pieceX, y: pieceY, id: pieceId, color} = piece;
 		const squareWidth = boardW / 8;
 		const calcX = mouseX - boardX;
 		const calcY = mouseY - boardY;
@@ -90,16 +90,28 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 			const newPosition = cloneDeep(latestPosition);
 			const pieceToTakeIndex = move.passant ? newPosition.findIndex((piece: PieceBoard) => piece.x === indexX && piece.y === pieceY && !piece.isCaptured) : newPosition.findIndex((piece: PieceBoard) => piece.x === indexX && piece.y === indexY && !piece.isCaptured);
 			setBoardSounds('move');
+			
 			if (pieceToTakeIndex >= 0) {
 				newPosition[pieceToTakeIndex].isCaptured = true;
 				setBoardSounds('capture');
 			}
+			
 			newPosition[pieceIndex].x = indexX;
 			newPosition[pieceIndex].y = indexY;
 			newPosition[pieceIndex].moved = true;
+
+			if(move.castles) {
+				const bigger =  move.x > pieceX
+				const rookToCastle = newPosition.filter((rook: PieceBoard) => rook.piece === 'rook' && rook.color === color && rook.y === pieceY && (bigger ? rook.x > piece.x : rook.x < piece.x))[0];
+				const rookIndex = newPosition.findIndex((rook: PieceBoard) => rook.id === rookToCastle.id);
+				newPosition[rookIndex].x = bigger ? indexX - 1 : indexX + 1;
+				newPosition[rookIndex].moved = true;
+			}
+			
 			setBoardHistory(prev => [...prev, newPosition]);
 			setSelectedColor(prev => prev === 'white' ? 'black' : prev === 'black' ? 'white' : 'black');
 			setTurnCount(boardHistory.length);
+			setSelectedPiece(null);
 		}
 	}
 

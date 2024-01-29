@@ -17,10 +17,10 @@
 		top: 0;
 		bottom: 0;
 		right: 0;
-		width: 40rem;
+		width: min(40rem, 100vw);
 		background-color: var(--color-secondary);
 		color: #fff;
-		padding: 2rem 2rem;
+		padding: calc(var(--header-height, 8rem) + 2rem) 2rem 2rem;
 		transform: translateX(100%);
 		pointer-events: none;
 		transition: transform 0.3s;

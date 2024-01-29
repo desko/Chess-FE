@@ -41,13 +41,9 @@ const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
         }
     });
 
-    // TODO Calculate castles
-
     if(color === 'white') {
         const checkCastleWhite = latestPosition[0].filter((piece: PieceBoard) => piece.y === 1 && !piece.isCaptured).sort((a: PieceBoard, b: PieceBoard) => a.x - b.x);
         const index = checkCastleWhite.findIndex((pieceInd: PieceBoard) => piece.id === pieceInd.id);
-        console.log(checkCastleWhite);
-        
         const prevPiece = checkCastleWhite[index - 1];
         const nextPiece = checkCastleWhite[index + 1];
         const checkPrev = prevPiece && prevPiece.piece === 'rook' && prevPiece.color === color && !prevPiece?.moved;
@@ -55,11 +51,9 @@ const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 
         if(piece.piece === 'king' && !piece?.moved) {
             if(checkPrev) {
-                console.log('prev');
-                const checkPossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x > prevPiece.x && move.x < piece.x);
+                const castlePossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x > prevPiece.x && move.x < piece.x);
 
-
-                if(checkPossible) {
+                if(castlePossible) {
                     if(prevPiece.x < piece.x){
                         piece.legalMoves.push({x: piece.x - 2, y: piece.y, castles: true})
                     }
@@ -70,9 +64,9 @@ const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
             }
             
             if(checkNext) {
-                const checkPossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x < prevPiece.x && move.x > piece.x);
+                const castlePossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x < nextPiece.x && move.x > piece.x);
 
-                if(checkPossible) {
+                if(castlePossible) {
                     if(nextPiece.x > piece.x){
                         piece.legalMoves.push({x: piece.x + 2, y: piece.y, castles: true})
                     }
@@ -87,8 +81,6 @@ const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
     if(color === 'black') {
         const checkCastleBlack = latestPosition[0].filter((piece: PieceBoard) => piece.y === 8 && !piece.isCaptured).sort((a: PieceBoard, b: PieceBoard) => a.x - b.x);
         const index = checkCastleBlack.findIndex((pieceInd: PieceBoard) => piece.id === pieceInd.id);
-        console.log(checkCastleBlack);
-        
         const prevPiece = checkCastleBlack[index - 1];
         const nextPiece = checkCastleBlack[index + 1];
         const checkPrev = prevPiece && prevPiece.piece === 'rook' && prevPiece.color === color && !prevPiece?.moved;
@@ -96,11 +88,9 @@ const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 
         if(piece.piece === 'king' && !piece?.moved) {
             if(checkPrev) {
-                console.log('prev');
-                const checkPossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x > prevPiece.x && move.x < piece.x);
+                const castlePossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x > prevPiece.x && move.x < piece.x);
 
-
-                if(checkPossible) {
+                if(castlePossible) {
                     if(prevPiece.x < piece.x){
                         piece.legalMoves.push({x: piece.x - 2, y: piece.y, castles: true})
                     }
@@ -111,9 +101,9 @@ const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
             }
             
             if(checkNext) {
-                const checkPossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x < prevPiece.x && move.x > piece.x);
+                const castlePossible = !blockers.some((move: LegalMove) => move.y === piece.y && move.x < nextPiece.x && move.x > piece.x);   
 
-                if(checkPossible) {
+                if(castlePossible) {
                     if(nextPiece.x > piece.x){
                         piece.legalMoves.push({x: piece.x + 2, y: piece.y, castles: true})
                     }
@@ -123,36 +113,6 @@ const calculateKing = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
                 }
             }
         }
-        
-        // const checkCastleBlack = latestPosition[0].filter((piece: PieceBoard) => piece.y === 8 && !piece.isCaptured).sort((a: PieceBoard, b: PieceBoard) => a.x - b.x);
-
-        // checkCastleBlack.forEach((piece: PieceBoard, index: number) => {
-        //     const {color} = piece;
-        //     const prevPiece = checkCastleBlack[index - 1];
-        //     const nextPiece = checkCastleBlack[index + 1];
-        //     const checkPrev = prevPiece && prevPiece.piece === 'rook' && prevPiece.color === color && !prevPiece?.moved;
-        //     const checkNext = nextPiece && nextPiece.piece === 'rook' && nextPiece.color === color && !nextPiece?.moved;
-
-        //     if(piece.piece === 'king' && !piece?.moved) {
-        //         if(checkPrev) {
-        //             if(prevPiece.x < piece.x){
-        //                 piece.legalMoves.push({x: piece.x - 2, y: piece.y})
-        //             } else {
-        //                 piece.legalMoves.push({x: piece.x + 2, y: piece.y})
-        //             }
-        //         }
-                
-        //         if(checkNext) {
-        //             if(prevPiece.x < piece.x){
-        //                 piece.legalMoves.push({x: piece.x - 2, y: piece.y})
-        //             } else {
-        //                 piece.legalMoves.push({x: piece.x + 2, y: piece.y})
-        //             }
-        //         }
-        //     }
-        // });
-
-        
     }
 }
 

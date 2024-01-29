@@ -81,8 +81,8 @@ const Piece = ({ boardRect, setNewPosition, piece, color, handleClick, selected,
 			y: 0,
 		}
 
-		if ('touches' in e) {
-			const { pageX, pageY } = e.touches[0];
+		if ('changedTouches' in e) {
+			const { pageX, pageY } = e.changedTouches[0];
 			mouseCoords.x = pageX;
 			mouseCoords.y = pageY;
 		} else {

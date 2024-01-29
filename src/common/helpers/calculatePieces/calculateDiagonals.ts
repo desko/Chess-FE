@@ -85,7 +85,7 @@ export const calculateDiagonalsAttacking = (piece: PieceBoard, latestPosition: P
         diagCountLB++;
     }
     
-    return attackingMoves;
+    return attackingMoves.filter((move: LegalMove) => move.x >= 1 && move.x <= 8 && move.y >= 1 && move.y <= 8);
 }
 
 const calculateDiagonals = (piece: PieceBoard, latestPosition: PositionBoard) => {

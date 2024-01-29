@@ -10,7 +10,7 @@ export const calculatePawnAttacking = (piece: PieceBoard) => {
 		{x: x+1, y: attackY}
 	];
 
-	return moves;
+	return moves.filter((move: LegalMove) => move.x >= 1 && move.x <= 8 && move.y >= 1 && move.y <= 8);
 }
 
 const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isChecked: boolean, stopCheck: LegalMove[]) => {

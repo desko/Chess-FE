@@ -78,7 +78,7 @@ export const calculateAxisAttacking = (piece: PieceBoard, latestPosition: Positi
         bottomCount++;
     }
     
-    return attackingMoves;
+    return attackingMoves.filter((move: LegalMove) => move.x >= 1 && move.x <= 8 && move.y >= 1 && move.y <= 8);
 }
 
 const calculateAxis = (piece: PieceBoard, latestPosition: PositionBoard) => {
