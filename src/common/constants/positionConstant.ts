@@ -5,6 +5,8 @@ export type LegalMove = {
 	x: number;
 	y: number;
 	promotion?: boolean;
+	passant?: boolean;
+	castles?: boolean;
 }
 
 export type PieceBoard = {

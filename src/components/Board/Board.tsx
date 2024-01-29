@@ -12,7 +12,6 @@ import { cloneDeep } from 'lodash-es';
 import { BOARD_SOUNDS } from '../../common/constants/constants';
 import playSoundsBoard from '../../common/helpers/playSoundsBoard';
 
-
 export type BoardHistory = PositionBoard[];
 export type Coords = {
 	x: number;
@@ -47,7 +46,6 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 		capture: [],
 	};
 	
-	// getLegalMoves(boardHistory, selectedColor, boardSounds, soundRefs, setBoardSounds)
 	getLegalMoves(boardHistory, selectedColor);
 
 	const selectPiece = useCallback((row: number, col: number) => {
@@ -67,7 +65,7 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 	const setNewPosition = (boardRect: BoardRect, coords: Coords, piece: PieceBoard, boardFlip: PieceColor) => {
 		const {x: boardX, y: boardY, width: boardW} = boardRect;
 		const {x: mouseX, y: mouseY} = coords;
-		const {id: pieceId} = piece;
+		const {x: pieceX, y: pieceY, id: pieceId} = piece;
 		const squareWidth = boardW / 8;
 		const calcX = mouseX - boardX;
 		const calcY = mouseY - boardY;
@@ -90,7 +88,7 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 
 		if(move && pieceIndex >= 0) {
 			const newPosition = cloneDeep(latestPosition);
-			const pieceToTakeIndex = newPosition.findIndex((piece: PieceBoard) => piece.x === indexX && piece.y === indexY && !piece.isCaptured);
+			const pieceToTakeIndex = move.passant ? newPosition.findIndex((piece: PieceBoard) => piece.x === indexX && piece.y === pieceY && !piece.isCaptured) : newPosition.findIndex((piece: PieceBoard) => piece.x === indexX && piece.y === indexY && !piece.isCaptured);
 			setBoardSounds('move');
 			if (pieceToTakeIndex >= 0) {
 				newPosition[pieceToTakeIndex].isCaptured = true;

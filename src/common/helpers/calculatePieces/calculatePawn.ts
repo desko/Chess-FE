@@ -87,7 +87,7 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 			const prev = previousPosition[0].find((piece: PieceBoard) => piece.id === enemyPiece.id);
 
 			if(prev && prev.y === y + 2 && prev.x === enemyPiece.x) {
-				piece.legalMoves.push({x: enemyPiece.x, y: piece.y + 1});
+				piece.legalMoves.push({x: enemyPiece.x, y: piece.y + 1, passant: true});
 			}
 		})
 		
@@ -95,7 +95,7 @@ const calculatePawn = (positionHistory: BoardHistory, piece: PieceBoard, isCheck
 			const prev = previousPosition[0].find((piece: PieceBoard) => piece.id === enemyPiece.id);
 			
 			if(prev && prev.y === y - 2 && prev.x === enemyPiece.x) {
-				piece.legalMoves.push({x: enemyPiece.x, y: piece.y - 1});
+				piece.legalMoves.push({x: enemyPiece.x, y: piece.y - 1, passant: true});
 			}
 		})
 	}
