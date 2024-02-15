@@ -1,9 +1,8 @@
-import { useRef, useCallback, useState, useEffect } from 'react';
+import { useRef, useCallback, useState, useEffect, useMemo } from 'react';
 import './Board.scss';
 import { DEF_POSITION } from '../../common/constants/positionConstant';
-import Piece from '../Piece/Piece';
-import getLegalMoves from '../../common/helpers/getLegalMoves';
-import type { PositionBoard, PieceBoard, LegalMove, PieceColor } from '../../common/constants/positionConstant';
+import getLegalMoves, { clearLegalMoves } from '../../common/helpers/getLegalMoves';
+import type { PositionBoard, PieceBoard, LegalMove, PieceColor, PieceType } from '../../common/constants/positionConstant';
 import getBoardByColor from '../../common/helpers/getBoardByColor';
 import BoardSquares from '../BoardSquares/BoardSquares';
 import useBoardSize, { BoardRect } from '../../hooks/useBoardSize';
@@ -11,14 +10,16 @@ import Button from '../Button/Button';
 import { cloneDeep } from 'lodash-es';
 import { BOARD_SOUNDS } from '../../common/constants/constants';
 import playSoundsBoard from '../../common/helpers/playSoundsBoard';
-
+import BoardPromotion from '../BoardPromotion/BoardPromotion';
+import BoardSounds from '../BoardSounds/BoardSounds';
+import Piece from '../Piece/Piece';
 export type BoardHistory = PositionBoard[];
 export type Coords = {
 	x: number;
 	y: number;
 };	
 
-export type BoardSounds = 'move' | 'check' | 'capture' | null;
+export type BoardSoundsType = 'move' | 'check' | 'capture' | null;
 export type SoundRefs = {
 	move: (HTMLAudioElement | null)[];
 	check: (HTMLAudioElement | null)[];
@@ -31,6 +32,12 @@ type Props = {
 	rows?: number;
 };
 
+export type Promotion = {
+	move: LegalMove;
+	piece: PieceBoard;
+	pieceToCapture: PieceBoard | null;
+}
+
 const Board = ({color='white', cols = 8, rows = 8}: Props) => {	
 	const innerRef = useRef<HTMLDivElement>(null);
 	const [boardHistory, setBoardHistory] = useState<BoardHistory>([DEF_POSITION]);
@@ -38,19 +45,26 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 	const [selectedColor, setSelectedColor] = useState<PieceColor>(color);	
 	const [boardFlip, setBoardFlip] = useState<PieceColor>(selectedColor);	
 	const [turnCount, setTurnCount] = useState<number>(0);
-	const [boardSounds, setBoardSounds] = useState<BoardSounds>(null);
+	const [boardSounds, setBoardSounds] = useState<BoardSoundsType>(null);
+	const [promotion, setPromotion] = useState<Promotion | null>(null);
 
-	const soundRefs: SoundRefs = {
+	const soundRefs = useMemo(() => ({
 		move: [],
 		check: [],
 		capture: [],
-	};
+	}), []);
 	
-	getLegalMoves(boardHistory, selectedColor);
+	if(promotion) {
+		clearLegalMoves(boardHistory[boardHistory.length - 1])
+	}
+
+	if(!promotion) {
+		getLegalMoves(boardHistory, selectedColor);
+	}
 
 	const selectPiece = useCallback((row: number, col: number) => {
 		const p = boardHistory[boardHistory.length - 1].find(
-			(el: PieceBoard) => el.y === row && el.x === col
+			(piece: PieceBoard) => piece.y === row && piece.x === col && !piece.isCaptured
 		);
 
 		if(p) {
@@ -60,7 +74,7 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 
 	useEffect(() => {
 		playSoundsBoard(soundRefs, boardSounds, setBoardSounds);
-	}, [boardSounds]);
+	}, [boardSounds, soundRefs]);
 
 	const setNewPosition = (boardRect: BoardRect, coords: Coords, piece: PieceBoard, boardFlip: PieceColor) => {
 		const {x: boardX, y: boardY, width: boardW} = boardRect;
@@ -91,7 +105,7 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 			const pieceToTakeIndex = move.passant ? newPosition.findIndex((piece: PieceBoard) => piece.x === indexX && piece.y === pieceY && !piece.isCaptured) : newPosition.findIndex((piece: PieceBoard) => piece.x === indexX && piece.y === indexY && !piece.isCaptured);
 			setBoardSounds('move');
 			
-			if (pieceToTakeIndex >= 0) {
+			if (pieceToTakeIndex >= 0 && !move.promotion) {
 				newPosition[pieceToTakeIndex].isCaptured = true;
 				setBoardSounds('capture');
 			}
@@ -107,7 +121,18 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 				newPosition[rookIndex].x = bigger ? indexX - 1 : indexX + 1;
 				newPosition[rookIndex].moved = true;
 			}
-			
+
+			if(move.promotion) {
+				const pieceToCapture = pieceToTakeIndex >= 0 ? newPosition[pieceToTakeIndex]: null;
+				const promotionMove: Promotion = {
+					move: move,
+					piece: piece,
+					pieceToCapture,
+				}
+				console.log('promo');
+				setPromotion(promotionMove);
+			}
+
 			setBoardHistory(prev => [...prev, newPosition]);
 			setSelectedColor(prev => prev === 'white' ? 'black' : prev === 'black' ? 'white' : 'black');
 			setTurnCount(boardHistory.length);
@@ -139,47 +164,37 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 			setNewPosition(boardRect, mouseCoords, selectedPiece, boardFlip);
 		}
 	}
+
+	const handlePromotion = (pieceToPromote: PieceType) => {
+		console.log(pieceToPromote);
+		console.log(promotion);
+		const latestPosition = cloneDeep(boardHistory[boardHistory.length - 1]);
+		const pieceToPromoteIndex = latestPosition.findIndex((piece: PieceBoard) => piece.id === promotion?.piece.id);
+		const pieceToCaptureIndex = latestPosition.findIndex((piece: PieceBoard) => piece.id === promotion?.pieceToCapture?.id);
+		latestPosition[pieceToPromoteIndex].piece = pieceToPromote;
+		setBoardSounds('move')
+		if(pieceToCaptureIndex >=0 ) {
+			latestPosition[pieceToCaptureIndex].isCaptured = true;
+			setBoardSounds('capture')
+		}
+
+		setBoardHistory(prev => {
+			const prevPos = cloneDeep(prev);
+			prevPos[prevPos.length - 1] = latestPosition
+			return prevPos;
+		})
+		setPromotion(null);
+		setSelectedPiece(null);
+	}
+
+	console.log(selectedPiece);
 	
 	return (
-		<div className='board'>
-			<div className="board__sounds">
-				{
-					BOARD_SOUNDS.move.map((sound, index) => {
-						return (
-							<audio
-								ref={ref => soundRefs.move.push(ref)}
-								key={`board-move-${index}`}
-							>
-								<source src={sound.url} type='audio/mpeg'/>
-							</audio>
-						)
-					})
-				}
-				{
-					BOARD_SOUNDS.check.map((sound, index) => {
-						return (
-							<audio
-								ref={ref => soundRefs.check.push(ref)}
-								key={`board-check-${index}`}
-							>
-								<source src={sound.url} type='audio/mpeg'/>
-							</audio>
-						)
-					})
-				}
-				{
-					BOARD_SOUNDS.capture.map((sound, index) => {
-						return (
-							<audio
-								ref={ref => soundRefs.capture.push(ref)}
-								key={`board-capture-${index}`}
-							>
-								<source src={sound.url} type='audio/mpeg'/>
-							</audio>
-						)
-					})
-				}
-			</div>
+		<div className={`board ${ boardFlip === 'black' ? 'flipped' : '' }`}>
+			<BoardSounds 
+				sounds={BOARD_SOUNDS}
+				soundRefs={soundRefs}
+			/>
 			<Button
 				type='button'
 				onClick={() => setBoardFlip(boardFlip === 'white' ? 'black' : boardFlip === 'black' ? 'white' : 'black')}
@@ -202,6 +217,17 @@ const Board = ({color='white', cols = 8, rows = 8}: Props) => {
 					boardArray={boardArray}
 					selectedPiece={selectedPiece}
 				/>
+
+				{
+					promotion &&
+					<BoardPromotion
+						handleClick={handlePromotion}
+						handleClose={() => {}}
+						promotion={promotion}
+						flipColor={boardFlip}
+						turnColor={turnCount % 2 === 0 ? 'black' : 'white'}
+					/>
+				}
 
 				<div className={`board__figures ${!!selectedPiece && 'has-selected'}`} onClick={handleClickFigures}>
 					{boardHistory[turnCount].map((piece) => {

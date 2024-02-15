@@ -1,4 +1,4 @@
-export type Piece = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
+export type PieceType = 'king' | 'queen' | 'rook' | 'bishop' | 'knight' | 'pawn';
 export type PieceColor = 'white' | 'black';
 
 export type LegalMove = {
@@ -11,7 +11,7 @@ export type LegalMove = {
 
 export type PieceBoard = {
 	color: PieceColor;
-	piece: Piece;
+	piece: PieceType;
 	x: number;
 	y: number;
 	isCaptured: boolean;

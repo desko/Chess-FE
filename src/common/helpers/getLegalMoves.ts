@@ -21,7 +21,7 @@ const clearPins = (position: PositionBoard) => {
 	});
 }
 
-const clearLegalMoves = (position: PositionBoard) => {
+export const clearLegalMoves = (position: PositionBoard) => {
 	position.forEach((piece: PieceBoard) => {
 		piece.legalMoves = [];
 	});

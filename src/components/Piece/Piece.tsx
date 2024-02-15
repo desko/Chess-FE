@@ -30,15 +30,15 @@ type Props = {
 };
 
 type pieceMapSide = {
-	king: ReactElement;
-	queen: ReactElement;
-	rook: ReactElement;
-	bishop: ReactElement;
-	knight: ReactElement;
-	pawn: ReactElement;
+	king?: ReactElement;
+	queen?: ReactElement;
+	rook?: ReactElement;
+	bishop?: ReactElement;
+	knight?: ReactElement;
+	pawn?: ReactElement;
 };
 
-type PieceMap = {
+export type PieceMap = {
 	white: pieceMapSide;
 	black: pieceMapSide;
 };

@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import './Button.scss';
 
 type Props = {
 	type?: 'submit' | 'button' | 'reset';

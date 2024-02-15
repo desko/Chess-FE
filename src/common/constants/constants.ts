@@ -1,4 +1,17 @@
-export const BOARD_SOUNDS = {
+
+export type BoardSound = {
+	url: string;
+};
+
+export type BoardSoundArray = BoardSound[];
+
+export type BoardSounds = {
+	capture: BoardSoundArray;
+	move: BoardSoundArray;
+	check: BoardSoundArray;
+};
+
+export const BOARD_SOUNDS: BoardSounds = {
 	capture: [
 		{
 			url: 'src/assets/sounds/capture.mp3'

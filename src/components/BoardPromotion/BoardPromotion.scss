@@ -1,0 +1,56 @@
+.board__promotions {
+	--black: 0;
+	--white: 0;
+	--square-width: calc(var(--inner-size) / 8);
+	--left-translate: calc(var(--col-num) * var(--square-width));
+	--top-translate: calc((var(--row-num) - 7) * var(--square-width));
+	z-index: 3;
+	display: flex;
+	flex-direction: column;
+	background-color: var(--color-main-300);
+	position: absolute;
+	width: var(--square-width);
+	top: 0;
+	left: 0;
+	transform: translate(var(--left-translate), var(--top-translate));
+
+	&.bottom {
+		--top-translate: calc((var(--row-num) + 4) * var(--square-width));
+	}    
+
+	&.bottom > .btn {
+		top: auto;
+		bottom: 100%;
+	}
+
+	> .btn {
+		position: absolute;
+		top: 100%;
+		left: 0;
+	}
+
+	.board__promotion-figures {
+		display: flex;
+		flex-direction: column;
+	}
+
+	&.bottom .board__promotion-figures {
+		flex-direction: column-reverse;
+	}
+
+	.board__promotion-figures > i {
+		display: block;
+		font-size: 0;
+	}
+}
+
+.board.flipped {
+	.board__promotions {
+		--left-translate: calc((7 - var(--col-num)) * var(--square-width));
+		--top-translate: calc(var(--row-num) * var(--square-width));
+	}
+
+	.board__promotions.bottom {
+		--top-translate: calc((var(--row-num) - 3) * var(--square-width));
+	}
+}

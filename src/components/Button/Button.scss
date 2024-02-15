@@ -2,4 +2,16 @@
 	display: inline-block;
 	border-radius: 0.5rem;
 	border: 0;
+	padding: 1rem 2rem;
+}
+
+.btn--transparent {
+	background-color: transparent;
+}
+
+.btn--full {
+	width: 100%;
+}
+.btn--edge {
+	border-radius: 0;
 }
