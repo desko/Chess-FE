@@ -8,7 +8,7 @@ import Loader from '../Loader/Loader';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
 
-type RegisterSchema = z.infer<typeof registerSchema>;
+export type RegisterSchema = z.infer<typeof registerSchema>;
 export type ZodError = {
 	message: string;
 	path: string[];
@@ -50,7 +50,7 @@ const FormSignup = () => {
 
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className='form__body'>
-					<FormRow
+					<FormRow<RegisterSchema>
 						type='email'
 						label='Email Address'
 						placeholder='Email Address'
@@ -62,7 +62,7 @@ const FormSignup = () => {
 								: ''
 						}
 					/>
-					<FormRow
+					<FormRow<RegisterSchema>
 						type='text'
 						label='Username'
 						placeholder='Username'
@@ -74,7 +74,7 @@ const FormSignup = () => {
 								: ''
 						}
 					/>
-					<FormRow
+					<FormRow<RegisterSchema>
 						type='password'
 						label='Password'
 						placeholder='Password'
@@ -86,7 +86,7 @@ const FormSignup = () => {
 								: ''
 						}
 					/>
-					<FormRow
+					<FormRow<RegisterSchema>
 						type='password'
 						label='Confirm Password'
 						placeholder='Confirm Password'
@@ -101,10 +101,7 @@ const FormSignup = () => {
 				</div>
 
 				<div className='form__actions'>
-					<Button
-						type='submit'
-						disabled={!isValid}
-					>
+					<Button type='submit' disabled={!isValid}>
 						Sign Up
 					</Button>
 					{isSubmitting && <Loader />}

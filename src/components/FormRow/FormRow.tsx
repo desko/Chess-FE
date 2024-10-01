@@ -1,18 +1,17 @@
+import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
 import './FormRow.scss';
 
-type Props = {
+type Props<T extends FieldValues> = {
 	type: 'text' | 'email' | 'password' | 'date' | 'number';
 	label: string;
-	name: string;
+	name: Path<T>;
 	error?: string;
 	hint?: string;
 	placeholder?: string;
-	// need to figure out register type when passed as prop
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	register: any;
+	register: UseFormRegister<T>;
 };
 
-const FormRow = ({
+const FormRow = <T extends FieldValues>({
 	type,
 	label,
 	name,
@@ -20,7 +19,7 @@ const FormRow = ({
 	hint = '',
 	error = '',
 	register,
-}: Props) => {
+}: Props<T>) => {
 	return (
 		<div className='form-row'>
 			<label htmlFor={name}>{label}</label>

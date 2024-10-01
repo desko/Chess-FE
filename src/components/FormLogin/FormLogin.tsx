@@ -15,7 +15,6 @@ import Loader from '../Loader/Loader';
 export type LoginSchema = z.infer<typeof loginSchema>;
 
 const FormLogin = () => {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const dispatch = useAppDispatch();
 	const { loginErrors, loggedIn } = useAppSelector((state) => state.user);
 	const navigate = useNavigate();
@@ -54,7 +53,7 @@ const FormLogin = () => {
 
 			<form onSubmit={handleSubmit(onSubmit)}>
 				<div className='form__body'>
-					<FormRow
+					<FormRow<LoginSchema>
 						type='email'
 						label='Email Address'
 						name='email'
@@ -67,7 +66,7 @@ const FormLogin = () => {
 						}
 					/>
 
-					<FormRow
+					<FormRow<LoginSchema>
 						type='password'
 						label='Password'
 						name='password'
@@ -82,12 +81,10 @@ const FormLogin = () => {
 				</div>
 
 				<div className='form__actions'>
-					<Button
-						type='submit'
-						disabled={!isValid}
-					>
+					<Button type='submit' disabled={!isValid}>
 						Login
 					</Button>
+
 					{isSubmitting && <Loader />}
 				</div>
 			</form>
